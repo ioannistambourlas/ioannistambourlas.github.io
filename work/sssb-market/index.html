@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SSSB Market | Ioannis Tambourlas</title>
+  <meta name="description" content="Case study: SSSB Market, a second-hand furniture board for students in SSSB housing in Stockholm: no accounts, WhatsApp contact, Next.js and Postgres.">
+  <meta property="og:title" content="SSSB Market | case study">
+  <meta property="og:image" content="https://ioannistambourlas.com/assets/shots/market-board.jpg">
+  <meta property="og:url" content="https://ioannistambourlas.com/work/sssb-market/">
+  <link rel="canonical" href="https://ioannistambourlas.com/work/sssb-market/">
+  <meta name="theme-color" content="#fbfaf7">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<div class="loadbar" id="loadbar" aria-hidden="true"></div>
+
+<div class="topbar">
+  <div class="wrap topbar__inner">
+    <span>Stockholm, Sweden</span>
+    <span class="topbar__right">
+      <a href="mailto:ioannis.tambourlas@gmail.com">ioannis.tambourlas@gmail.com</a>
+      <a href="https://github.com/ioannistambourlas" rel="noopener">GitHub</a>
+      <a href="https://www.linkedin.com/in/ioannis-tambourlas-84197b3ab/" rel="noopener">LinkedIn</a>
+    </span>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="brand" href="../../">
+      <span class="brand__name">Ioannis Tambourlas</span>
+      <span class="brand__tag">Software developer &amp; badminton player</span>
+    </a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu"><span></span>Menu</button>
+    <nav class="menu" id="menu" aria-label="Main">
+      <a href="../../#projects">Projects</a>
+      <a href="../../#experience">Experience</a>
+      <a href="../../#badminton">Badminton</a>
+      <a href="../../#about">About</a>
+      <a href="../../#contact">Contact</a>
+      <a class="menu__cv" href="../../Ioannis-Tambourlas-CV.pdf" download>Download CV</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wrap case">
+
+  <section class="case-hero">
+    <a class="case-back" href="../../#projects">&larr; All projects</a>
+    <p class="label">Case study 02</p>
+    <h1>SSSB Market</h1>
+    <p class="case-hero__sub">A second-hand furniture board for students in Stockholm. Post in a minute, no account, and the buyer messages you on WhatsApp.</p>
+    <dl class="case-meta">
+      <div><dt>Role</dt><dd>Co-developer</dd></div>
+      <div><dt>Year</dt><dd>2026</dd></div>
+      <div><dt>Team</dt><dd>With Antreas Patsiantos</dd></div>
+      <div><dt>Links</dt><dd><a href="../../demos/student-market/">Live demo</a></dd></div>
+    </dl>
+  </section>
+
+  <div class="gallery gallery--phones" style="margin-top:0" data-reveal>
+    <figure><a class="case-img" href="../../demos/student-market/"><img src="../../assets/shots/market-board.jpg" alt="The board: search, category chips and listings" width="780" height="1560"></a><figcaption class="case-cap">The board</figcaption></figure>
+    <figure><a class="case-img" href="../../demos/student-market/#/listing/l2"><img src="../../assets/shots/market-listing.jpg" alt="A listing with price, condition and a WhatsApp button" width="780" height="1560"></a><figcaption class="case-cap">A listing</figcaption></figure>
+    <figure><a class="case-img" href="../../demos/student-market/#/sell"><img src="../../assets/shots/market-sell.jpg" alt="The sell form" width="780" height="1560"></a><figcaption class="case-cap">Selling</figcaption></figure>
+    <figure><a class="case-img" href="../../demos/student-market/"><img src="../../assets/shots/market-manage.jpg" alt="The seller's private manage page" width="780" height="1560"></a><figcaption class="case-cap">The private manage link</figcaption></figure>
+  </div>
+
+  <section class="case-sec" data-reveal>
+    <h2><span class="label">The problem</span>Furniture in the bin room</h2>
+    <div class="case-sec__body">
+      <p class="big">Every August thousands of students move into SSSB housing in Stockholm. Every June many of them move out, and a lot of perfectly good furniture ends up in the bin room.</p>
+      <p>The people who need a desk and the people throwing one out often live in the same building. Existing marketplaces want an account, a profile and a message thread before anything happens. That is too much friction for a 200-kronor lamp that has to be gone by Friday.</p>
+    </div>
+  </section>
+
+  <section class="case-sec" data-reveal>
+    <h2><span class="label">The product</span>As little as possible between seller and buyer</h2>
+    <div class="case-sec__body">
+      <div class="split">
+        <div>
+          <h3>Selling</h3>
+          <ul>
+            <li>No sign-up: photos, a title, a price and a WhatsApp number</li>
+            <li>A private link to edit the listing, mark it sold or delete it</li>
+            <li>Listings disappear by themselves after 60 days</li>
+            <li>A &ldquo;give away for free&rdquo; switch and a separate free board</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Buying</h3>
+          <ul>
+            <li>Search, category chips, price range and sorting</li>
+            <li>Filters live in the URL, so a search can be shared</li>
+            <li>One tap opens WhatsApp with a message already written</li>
+            <li>English and Swedish throughout</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="case-sec" data-reveal>
+    <h2><span class="label">Under the hood</span>Small app, careful details</h2>
+    <div class="case-sec__body">
+      <dl class="tech">
+        <dt>Framework</dt><dd>Next.js 16 with the App Router and React 19, in TypeScript, styled with Tailwind CSS 4.</dd>
+        <dt>Data</dt><dd>Prisma 7 on Supabase Postgres. Board queries hit one composite index on status, area, category and date.</dd>
+        <dt>No accounts</dt><dd>Each listing gets a secret manage token (24 random bytes, base64url) which becomes the seller&rsquo;s private link.</dd>
+        <dt>Photos</dt><dd>Resized to 1280&nbsp;px JPEG in the browser before upload, stored in Supabase Storage and served through a small redirect route to the CDN.</dd>
+        <dt>Validation</dt><dd><code>zod</code> schemas for every listing; phone numbers checked per country with <code>libphonenumber-js</code> and stored in E.164.</dd>
+        <dt>Spam</dt><dd>At most five posts per IP per hour, tracked in its own table, plus a honeypot field that quietly gives bots a fake success.</dd>
+        <dt>Moderation</dt><dd>A password-protected admin page with an HS256-signed, http-only session cookie issued with <code>jose</code>.</dd>
+        <dt>Translations</dt><dd>English and Swedish dictionaries typed against each other, so a missing string fails the build instead of the page.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <div class="gallery gallery--phones" data-reveal>
+    <figure><div class="case-img"><img src="../../assets/shots/market-filters.jpg" alt="Filter sheet with price range and sorting" width="780" height="1560" loading="lazy"></div><figcaption class="case-cap">Filters</figcaption></figure>
+    <figure><div class="case-img"><img src="../../assets/shots/market-free-sv.jpg" alt="The free board in Swedish" width="780" height="1560" loading="lazy"></div><figcaption class="case-cap">The free board, in Swedish</figcaption></figure>
+    <figure><div class="case-img"><img src="../../assets/shots/market-listing.jpg" alt="Listing detail" width="780" height="1560" loading="lazy"></div><figcaption class="case-cap">Contact on WhatsApp</figcaption></figure>
+    <figure><div class="case-img"><img src="../../assets/shots/market-sell.jpg" alt="Sell form" width="780" height="1560" loading="lazy"></div><figcaption class="case-cap">Posting</figcaption></figure>
+  </div>
+
+  <div class="case-cta" data-reveal>
+    <p>Try SSSB Market<span>Browse, filter, switch to Swedish, post an item with your own photos and manage it from the private link. Runs in your browser with sample listings.</span></p>
+    <div class="case-cta__links">
+      <a class="btn" href="../../demos/student-market/">Open the demo</a>
+    </div>
+  </div>
+
+  <a class="next" href="../futsalaki/">
+    <p class="label">Next case study</p>
+    <strong>Futsalaki</strong>
+  </a>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap site-footer__cols">
+    <div>
+      <h3 class="widget__title">Ioannis Tambourlas</h3>
+      <p>Computer Science student at KTH, co-founder of Futsalaki and badminton player for Cyprus.</p>
+    </div>
+    <div>
+      <h3 class="widget__title">Projects</h3>
+      <ul>
+        <li><a href="../futsalaki/">Futsalaki</a></li>
+        <li><a href="../sssb-market/">SSSB Market</a></li>
+        <li><a href="../../demos/futsalaki-app/">Futsalaki app demo</a></li>
+        <li><a href="../../demos/student-market/">SSSB Market demo</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="widget__title">Elsewhere</h3>
+      <ul>
+        <li><a href="https://github.com/ioannistambourlas" rel="noopener">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/ioannis-tambourlas-84197b3ab/" rel="noopener">LinkedIn</a></li>
+        <li><a href="../../Ioannis-Tambourlas-CV.pdf" download>CV (PDF)</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap site-footer__bottom">
+    <span>&copy; <span id="y">2026</span> Ioannis Tambourlas</span>
+    <a href="#main" class="totop">Back to top</a>
+  </div>
+</footer>
+
+<script src="../../assets/site.js"></script>
+</body>
+</html>

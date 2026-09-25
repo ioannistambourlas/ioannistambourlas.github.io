@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SSSB Market — demo</title>
+<meta name="description" content="Interactive demo of SSSB Market, a second-hand furniture board for students in SSSB housing, Stockholm.">
+<meta name="theme-color" content="#ece5d8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --oat: #ece5d8; --cream: #f7f2e9; --cream-2: #fbf8f1;
+  --ink: #33302a; --ink-soft: #5e594e; --ink-faint: #8b8578;
+  --sage: #7e9384; --sage-tint: #dde4dd; --pine: #47614f; --clay: #b5674a;
+  --line: #ded6c6; --line-2: #e7e0d2; --wa: #3f9b6a; --wa-deep: #2f7a52;
+  --radius: 22px; --radius-sm: 14px;
+  --shadow: 0 10px 30px -18px rgb(51 48 42 / .35);
+  --shadow-soft: 0 4px 18px -12px rgb(51 48 42 / .4);
+  --shadow-lift: 0 18px 40px -22px rgb(51 48 42 / .45);
+  --display: "Darker Grotesque", system-ui, sans-serif;
+  --body: "Hanken Grotesk", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  min-height: 100dvh; color: var(--ink); font-family: var(--body); line-height: 1.55;
+  -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent;
+  background:
+    radial-gradient(120% 80% at 20% -10%, #e4dbca 0%, transparent 60%),
+    radial-gradient(120% 80% at 100% 110%, #e1e7df 0%, transparent 55%),
+    var(--oat);
+  background-attachment: fixed;
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: inherit; text-decoration: none; }
+
+.demo-bar { background: var(--ink); color: #efeae0; font-size: 12.5px; padding: 7px 16px; display: flex; justify-content: space-between; gap: 12px; }
+.demo-bar a { text-decoration: underline; text-underline-offset: 2px; }
+body.embed .demo-bar { display: none; }
+
+header { position: sticky; top: 0; z-index: 30; border-bottom: 1px solid var(--line); background: rgb(236 229 216 / .85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.hdr { max-width: 768px; margin: 0 auto; height: 56px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; }
+.logo { font-family: var(--display); font-size: 2rem; font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
+.logo b { color: var(--pine); font-weight: 700; }
+.hdr__right { display: flex; align-items: center; gap: 8px; }
+.lang { display: flex; border: 1.5px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--cream); }
+.lang button { border: 0; background: none; padding: 4px 9px; font-size: 12px; font-weight: 700; color: var(--ink-faint); cursor: pointer; }
+.lang button[aria-pressed="true"] { background: var(--ink); color: var(--cream); }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 2.9rem; padding: 0 1.25rem; border-radius: 999px; font-weight: 700; border: 0; cursor: pointer; transition: transform .12s, background .15s; }
+.btn:active { transform: scale(.97); }
+.btn-primary { background: var(--pine); color: #f3f0e7; }
+.btn-primary:hover { background: #3c5443; }
+.btn-ghost { background: var(--cream); border: 1.5px solid var(--line); color: var(--ink); }
+.btn-wa { background: var(--wa); color: #fff; width: 100%; font-size: 1.05rem; }
+.btn-wa:hover { background: var(--wa-deep); }
+.btn-sm { min-height: 2.25rem; padding: 0 1rem; font-size: .875rem; }
+
+main { max-width: 768px; margin: 0 auto; padding: 0 16px 112px; }
+
+.tabs { display: flex; gap: 22px; padding: 16px 2px 0; font-family: var(--display); font-size: 1.55rem; font-weight: 600; line-height: 1; }
+.tabs a { color: var(--ink-faint); padding-bottom: 6px; border-bottom: 3px solid transparent; }
+.tabs a[aria-current="page"] { color: var(--ink); border-color: var(--sage); }
+.tagline { color: var(--ink-soft); font-size: .95rem; margin: 10px 2px 14px; }
+
+.search { display: flex; gap: 8px; margin-bottom: 12px; }
+.search__field { flex: 1; display: flex; align-items: center; gap: 8px; background: var(--cream); border: 1.5px solid var(--line); border-radius: 999px; padding: 0 16px; min-height: 2.9rem; }
+.search__field svg { flex: none; color: var(--ink-faint); }
+.search__field input { border: 0; outline: 0; background: none; flex: 1; min-width: 0; }
+.filter-btn { flex: none; }
+
+.chip-rail { display: flex; gap: .5rem; overflow-x: auto; scrollbar-width: none; padding-bottom: .25rem; margin: 0 -16px; padding-left: 16px; padding-right: 16px; }
+.chip-rail::-webkit-scrollbar { display: none; }
+.chip { flex: none; display: inline-flex; align-items: center; gap: .35rem; border: 1.5px solid var(--line); background: var(--cream); color: var(--ink-soft); border-radius: 999px; padding: .45rem .9rem; font-size: .875rem; font-weight: 600; min-height: 2.5rem; white-space: nowrap; cursor: pointer; }
+.chip svg { width: 16px; height: 16px; }
+.chip[data-active="true"] { border-color: var(--sage); background: var(--sage); color: #20261f; }
+
+.count { font-size: .85rem; color: var(--ink-faint); margin: 14px 2px 10px; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (min-width: 640px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
+
+.card { display: block; overflow: hidden; border-radius: var(--radius); border: 1px solid var(--line-2); background: var(--cream); box-shadow: var(--shadow); transition: transform .18s, box-shadow .18s; cursor: pointer; }
+.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
+.card:active { transform: scale(.98); }
+.card__img { position: relative; aspect-ratio: 1; background: var(--sage-tint); display: flex; align-items: center; justify-content: center; color: var(--pine); }
+.card__img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card__img svg { width: 46px; height: 46px; opacity: .75; }
+.card__body { padding: 12px; }
+.card__title { font-size: .875rem; font-weight: 600; line-height: 1.3; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.card__where { margin: 4px 0 0; font-size: .75rem; font-weight: 500; color: var(--pine); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.sticker { font-weight: 700; background: var(--pine); color: #f3f0e7; border-radius: 999px; padding: .3rem .72rem; display: inline-block; letter-spacing: .01em; box-shadow: var(--shadow-soft); font-size: .875rem; }
+.card .sticker { position: absolute; left: 8px; bottom: 8px; }
+.sticker--free { background: var(--sage); color: #20261f; }
+.sticker--sold { background: #ece0d5; color: #8a6045; }
+
+.empty { text-align: center; padding: 56px 16px; color: var(--ink-soft); }
+.empty h3 { font-family: var(--display); font-size: 1.8rem; margin: 0 0 4px; color: var(--ink); }
+
+.fab { position: fixed; right: max(16px, calc(50% - 368px)); bottom: 22px; z-index: 20; box-shadow: var(--shadow-lift); min-height: 3.3rem; padding: 0 1.4rem; font-size: 1rem; }
+body.embed .fab { right: 16px; }
+
+/* detail */
+.back { display: inline-flex; align-items: center; gap: 6px; margin: 16px 0 12px; font-weight: 600; color: var(--ink-soft); background: none; border: 0; cursor: pointer; padding: 0; }
+.gallery { border-radius: var(--radius); overflow: hidden; aspect-ratio: 1; background: var(--sage-tint); display: flex; align-items: center; justify-content: center; color: var(--pine); position: relative; box-shadow: var(--shadow); }
+.gallery img { width: 100%; height: 100%; object-fit: cover; }
+.gallery svg { width: 96px; height: 96px; opacity: .7; }
+@media (min-width: 640px) { .gallery { aspect-ratio: 4 / 3; } }
+.detail h1 { font-family: var(--display); font-size: 2.3rem; line-height: 1; font-weight: 700; letter-spacing: -0.01em; margin: 18px 0 10px; }
+.detail .sticker { font-size: 1.15rem; padding: .4rem 1rem; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 16px 0; font-size: .9rem; color: var(--ink-soft); }
+.facts b { color: var(--ink); font-weight: 600; }
+.desc { white-space: pre-wrap; background: var(--cream-2); border: 1px solid var(--line-2); border-radius: var(--radius-sm); padding: 14px 16px; margin: 0 0 18px; }
+.cta { display: grid; gap: 10px; }
+.note { font-size: .8rem; color: var(--ink-faint); text-align: center; margin-top: 6px; }
+.sold-banner { background: #ece0d5; color: #8a6045; border-radius: var(--radius-sm); padding: 12px 16px; font-weight: 600; text-align: center; }
+
+/* form */
+.form h1 { font-family: var(--display); font-size: 2.4rem; line-height: 1; margin: 18px 0 8px; }
+.form .intro { color: var(--ink-soft); font-size: .9rem; margin: 0 0 18px; }
+.field { margin-bottom: 16px; }
+.field > label, .field > .lbl { display: block; font-weight: 700; font-size: .92rem; margin-bottom: 6px; }
+.field .hint { font-size: .8rem; color: var(--ink-faint); margin-top: 4px; }
+.input { width: 100%; background: var(--cream); border: 1.5px solid var(--line); border-radius: var(--radius-sm); padding: 12px 14px; outline: 0; }
+.input:focus { border-color: var(--sage); }
+textarea.input { min-height: 110px; resize: vertical; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.check { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: .9rem; margin-top: 8px; cursor: pointer; }
+.check input { width: 18px; height: 18px; accent-color: var(--pine); }
+.photos { display: flex; gap: 8px; flex-wrap: wrap; }
+.photo, .photo-add { width: 84px; height: 84px; border-radius: var(--radius-sm); overflow: hidden; flex: none; }
+.photo img { width: 100%; height: 100%; object-fit: cover; }
+.photo-add { border: 1.5px dashed var(--sage); background: var(--cream-2); color: var(--pine); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: .75rem; font-weight: 600; cursor: pointer; gap: 4px; }
+.error { color: #a4452a; font-size: .85rem; margin-top: 4px; }
+.phone { display: grid; grid-template-columns: 96px 1fr; gap: 8px; }
+
+.success { text-align: center; padding-top: 28px; }
+.success h1 { font-family: var(--display); font-size: 2.4rem; margin: 0 0 8px; }
+.linkbox { display: flex; gap: 8px; background: var(--cream); border: 1.5px solid var(--line); border-radius: var(--radius-sm); padding: 8px 8px 8px 14px; align-items: center; margin: 12px 0; text-align: left; }
+.linkbox code { flex: 1; font-size: .8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--pine); }
+
+/* sheet */
+.sheet-backdrop { position: fixed; inset: 0; background: rgb(35 33 28 / .4); z-index: 40; opacity: 0; pointer-events: none; transition: opacity .2s; }
+.sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 41; background: var(--cream); border-radius: 24px 24px 0 0; padding: 10px 18px 24px; transform: translateY(100%); transition: transform .25s ease; max-width: 768px; margin: 0 auto; box-shadow: 0 -20px 40px -20px rgb(0 0 0 / .3); }
+.sheet.open { transform: none; }
+.sheet-backdrop.open { opacity: 1; pointer-events: auto; }
+.sheet__grab { width: 40px; height: 4px; border-radius: 4px; background: var(--line); margin: 0 auto 14px; }
+.sheet h2 { font-family: var(--display); font-size: 1.8rem; margin: 0 0 12px; }
+.sheet__actions { display: flex; gap: 10px; margin-top: 18px; }
+.sheet__actions .btn { flex: 1; }
+
+.toast { position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--cream); padding: 10px 16px; border-radius: 999px; font-size: .9rem; font-weight: 600; opacity: 0; transition: .2s; z-index: 60; pointer-events: none; max-width: calc(100% - 32px); text-align: center; }
+.toast.show { opacity: 1; transform: translateX(-50%); }
+
+footer { border-top: 1px solid var(--line); padding: 24px 16px; text-align: center; font-size: .75rem; color: var(--ink-soft); }
+body.embed footer { display: none; }
+</style>
+</head>
+<body>
+
+<div class="demo-bar">
+  <span>Demo &middot; sample listings, nothing is saved to a server</span>
+  <a href="../../#sssb-market">&larr; Back to Ioannis Tambourlas</a>
+</div>
+
+<header>
+  <div class="hdr">
+    <a href="#/" class="logo" aria-label="SSSB Market">sssb&nbsp;<b>market</b></a>
+    <div class="hdr__right">
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="sv" aria-pressed="false">SV</button>
+      </div>
+      <a href="#/sell" class="btn btn-primary btn-sm" data-t="nav.sell">Sell</a>
+    </div>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<footer data-t="footer">Made for SSSB students. Not affiliated with SSSB.</footer>
+
+<div class="sheet-backdrop" id="backdrop"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title"></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  if (/[?&]embed\b/.test(location.search)) document.body.classList.add("embed");
+
+  // ---------- data ----------
+  var ICONS = {
+    beds: '<path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/>',
+    sofas: '<path d="M20 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><path d="M2 11v5a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v2H6v-2a2 2 0 0 0-4 0Z"/><path d="M4 18v2"/><path d="M20 18v2"/><path d="M12 6v7"/>',
+    tables: '<rect x="3" y="6" width="18" height="3" rx="1"/><path d="M6 9v10"/><path d="M18 9v10"/>',
+    chairs: '<path d="M7 4v16"/><path d="M7 12h8v8"/><path d="M7 8h5"/>',
+    storage: '<rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M4 9h16"/><path d="M4 15h16"/><path d="M10 6h4"/><path d="M10 12h4"/>',
+    lighting: '<path d="M15 14c.2-1 .7-1.7 1.5-2.5A5.5 5.5 0 1 0 7.5 11.5c.8.8 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>',
+    kitchen: '<path d="M3 2v7c0 1.1.9 2 2 2h1a2 2 0 0 0 2-2V2"/><path d="M5.5 2v20"/><path d="M18 2a4 4 0 0 0-4 4v6h4"/><path d="M18 2v20"/>',
+    electronics: '<path d="M9 8V3"/><path d="M15 8V3"/><path d="M6 8h12v4a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/><path d="M12 16v5"/>',
+    decor: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-4.5-4.5L6 21"/>',
+    other: '<path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/>',
+    all: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>'
+  };
+  function icon(slug) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONS[slug] || ICONS.other) + "</svg>";
+  }
+
+  var CATEGORIES = [
+    ["beds", "Beds & Mattresses", "Sängar & madrasser"],
+    ["sofas", "Sofas & Armchairs", "Soffor & fåtöljer"],
+    ["tables", "Tables & Desks", "Bord & skrivbord"],
+    ["chairs", "Chairs", "Stolar"],
+    ["storage", "Storage & Shelving", "Förvaring & hyllor"],
+    ["lighting", "Lighting", "Belysning"],
+    ["kitchen", "Kitchen & Appliances", "Kök & vitvaror"],
+    ["electronics", "Electronics", "Elektronik"],
+    ["decor", "Decor & Textiles", "Inredning & textil"],
+    ["other", "Other", "Övrigt"]
+  ];
+  var CONDITIONS = [["like-new", "Like new", "Som ny"], ["good", "Good", "Bra skick"], ["fair", "Fair", "Okej skick"], ["worn", "Worn", "Sliten"]];
+  var CAMPUS = "Lappkärrsberget (Lappis)";
+
+  var T = {
+    en: {
+      "nav.sell": "Sell", tagline: "Used furniture between SSSB neighbours", free: "Free stuff", freeTag: "Give-aways from your SSSB neighbours",
+      board: "Board", search: "Search furniture…", all: "All", filters: "Filters", items: "{n} items", item: "1 item",
+      empty: "Nothing here yet", emptyHint: "Try clearing the filters — or be the first to sell something!",
+      sellFab: "Sell an item", freeLabel: "Free", sold: "Sold", condition: "Condition", posted: "Posted", daysAgo: "{n} days ago", today: "today", yesterday: "yesterday",
+      wa: "Chat on WhatsApp", call: "Call", waNote: "In the real app this opens WhatsApp with “Hi! Is this still available?” prefilled.",
+      back: "Back", soldBanner: "This item has been sold", autoRemoved: "auto-removed in {n} days",
+      price: "Price (SEK)", sort: "Sort by", newest: "Newest first", cheapest: "Price: low to high", expensive: "Price: high to low", min: "Min", max: "Max", apply: "Show results", clear: "Clear all",
+      sellTitle: "Sell an item", lifecycle: "Listings automatically disappear 60 days after posting. After publishing you get a private link to mark yours as sold or remove it sooner.",
+      photos: "Photos", addPhotos: "Add photos", photosHint: "Up to 5 photos — the first one is the cover.", itemTitle: "Title", titlePh: "e.g. IKEA MALM desk, white",
+      description: "Description", descPh: "Size, condition, pickup details…", giveFree: "Give away for free", category: "Category", selectOne: "Select…",
+      phone: "WhatsApp number", phoneHint: "Buyers contact you directly on WhatsApp. Shown only on this listing.", publish: "Publish listing", publishing: "Publishing…",
+      required: "Please fill this in.", phoneBad: "Enter a valid phone number.",
+      liveTitle: "Your listing is live!", liveIntro: "Save this private link — it's the only way to edit your listing or mark it as sold:", copy: "Copy link", copied: "Copied!", view: "View my listing",
+      manage: "Manage your listing", markSold: "Mark as sold", markActive: "Mark as available again", soldNote: "Sold items are hidden from the board.", del: "Delete listing", delConfirm: "Delete this listing permanently?", deleted: "Listing deleted", saved: "Saved!",
+      footer: "Made for SSSB students. Not affiliated with SSSB.", notFound: "This listing is gone"
+    },
+    sv: {
+      "nav.sell": "Sälj", tagline: "Begagnade möbler mellan SSSB-grannar", free: "Gratis", freeTag: "Saker som SSSB-grannar skänker bort",
+      board: "Anslagstavla", search: "Sök möbler…", all: "Alla", filters: "Filter", items: "{n} annonser", item: "1 annons",
+      empty: "Inget här än", emptyHint: "Prova att rensa filtren — eller bli först med att sälja något!",
+      sellFab: "Sälj något", freeLabel: "Gratis", sold: "Såld", condition: "Skick", posted: "Upplagd", daysAgo: "för {n} dagar sedan", today: "idag", yesterday: "igår",
+      wa: "Chatta på WhatsApp", call: "Ring", waNote: "I appen öppnas WhatsApp med ”Hej! Finns den kvar?” ifyllt.",
+      back: "Tillbaka", soldBanner: "Den här saken är såld", autoRemoved: "tas bort om {n} dagar",
+      price: "Pris (kr)", sort: "Sortera", newest: "Nyast först", cheapest: "Pris: lägst först", expensive: "Pris: högst först", min: "Min", max: "Max", apply: "Visa resultat", clear: "Rensa",
+      sellTitle: "Sälj något", lifecycle: "Annonser försvinner automatiskt 60 dagar efter publicering. Efter publicering får du en privat länk för att markera som såld eller ta bort den tidigare.",
+      photos: "Bilder", addPhotos: "Lägg till", photosHint: "Upp till 5 bilder — den första blir omslag.", itemTitle: "Rubrik", titlePh: "t.ex. IKEA MALM skrivbord, vitt",
+      description: "Beskrivning", descPh: "Mått, skick, upphämtning…", giveFree: "Skänk bort gratis", category: "Kategori", selectOne: "Välj…",
+      phone: "WhatsApp-nummer", phoneHint: "Köpare kontaktar dig direkt på WhatsApp. Visas bara på den här annonsen.", publish: "Publicera annons", publishing: "Publicerar…",
+      required: "Fyll i det här.", phoneBad: "Ange ett giltigt telefonnummer.",
+      liveTitle: "Din annons är publicerad!", liveIntro: "Spara den här privata länken — det är enda sättet att ändra annonsen eller markera den som såld:", copy: "Kopiera länk", copied: "Kopierad!", view: "Visa min annons",
+      manage: "Hantera din annons", markSold: "Markera som såld", markActive: "Markera som tillgänglig igen", soldNote: "Sålda saker döljs från tavlan.", del: "Ta bort annons", delConfirm: "Ta bort annonsen permanent?", deleted: "Annonsen borttagen", saved: "Sparat!",
+      footer: "Gjord för SSSB-studenter. Inte ansluten till SSSB.", notFound: "Annonsen finns inte längre"
+    }
+  };
+
+  var DAY = 86400000, now = Date.now();
+  var SEED = [
+    { t: "IKEA MALM desk, white", p: 350, c: "tables", k: "good", d: 1, x: "140 × 65 cm. A few marks on the top, drawers work fine. Pick up in Lappis, house 7." },
+    { t: "Double bed 140 cm with mattress", p: 900, c: "beds", k: "good", d: 2, x: "Frame + 18 cm foam mattress. Moving out end of month, needs to go before the 28th. I can help carry." },
+    { t: "Grey 2-seat sofa", p: 600, c: "sofas", k: "fair", d: 3, x: "Comfortable, cover is washable. Small tear on the back (not visible against a wall)." },
+    { t: "Desk lamp, black", p: 0, c: "lighting", k: "good", d: 0, x: "Free! Bulb included. Leave a message and grab it from the corridor." },
+    { t: "KALLAX shelf 2×4", p: 250, c: "storage", k: "like-new", d: 4, x: "Bought in January, used one semester. Disassembled, all screws in a bag." },
+    { t: "Office chair, adjustable", p: 400, c: "chairs", k: "good", d: 5, x: "Height and armrests adjust. Saved my back during exam period." },
+    { t: "Rice cooker + kettle", p: 150, c: "kitchen", k: "good", d: 2, x: "Both work perfectly. Selling together." },
+    { t: "Monitor 24\" 1080p", p: 700, c: "electronics", k: "like-new", d: 6, x: "HDMI + DisplayPort, cable included. No dead pixels." },
+    { t: "Rug 160×230, beige", p: 200, c: "decor", k: "fair", d: 8, x: "Cleaned before moving. Makes the corridor room a lot less echoey." },
+    { t: "Pots and pans set", p: 0, c: "kitchen", k: "worn", d: 1, x: "Three pots and a pan, well used but fine. Free to whoever picks them up first." },
+    { t: "Bedside table", p: 100, c: "storage", k: "good", d: 9, x: "One drawer, white. Fits next to the standard Lappis bed." },
+    { t: "Floor lamp, paper shade", p: 150, c: "lighting", k: "like-new", d: 3, x: "Warm light, dimmable bulb included." },
+    { t: "Bookshelf, oak finish", p: 300, c: "storage", k: "good", d: 12, x: "180 cm tall, 5 shelves.", sold: true }
+  ];
+
+  var STORE_KEY = "sssb-demo-v1";
+  var listings = load();
+  function load() {
+    try { var raw = localStorage.getItem(STORE_KEY); if (raw) return JSON.parse(raw); } catch (e) {}
+    return SEED.map(function (s, i) {
+      return { id: "l" + (i + 1), title: s.t, priceSek: s.p, category: s.c, condition: s.k, description: s.x, createdAt: now - s.d * DAY - i * 3600000, status: s.sold ? "SOLD" : "ACTIVE", images: [], phone: "+46 70 123 45 67", token: "demo" + i };
+    });
+  }
+  function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(listings)); } catch (e) {} }
+
+  var state = { lang: "en", q: "", cat: "all", sort: "newest", min: "", max: "" };
+  try { state.lang = localStorage.getItem("sssb-demo-lang") || "en"; } catch (e) {}
+
+  function t(k, n) { var s = (T[state.lang][k] != null ? T[state.lang][k] : T.en[k]) || k; return n != null ? s.replace("{n}", n) : s; }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function catLabel(slug) { var c = CATEGORIES.find(function (x) { return x[0] === slug; }); return c ? (state.lang === "sv" ? c[2] : c[1]) : slug; }
+  function condLabel(slug) { var c = CONDITIONS.find(function (x) { return x[0] === slug; }); return c ? (state.lang === "sv" ? c[2] : c[1]) : slug; }
+  function price(p) { return p === 0 ? t("freeLabel") : p.toLocaleString("sv-SE") + " kr"; }
+  function ago(ts) { var d = Math.floor((Date.now() - ts) / DAY); return d <= 0 ? t("today") : d === 1 ? t("yesterday") : t("daysAgo", d); }
+
+  var app = document.getElementById("app");
+
+  // ---------- views ----------
+  function viewBoard(freeOnly) {
+    var list = listings.filter(function (l) { return l.status === "ACTIVE"; });
+    if (freeOnly) list = list.filter(function (l) { return l.priceSek === 0; });
+    if (state.cat !== "all") list = list.filter(function (l) { return l.category === state.cat; });
+    if (state.q) { var q = state.q.toLowerCase(); list = list.filter(function (l) { return (l.title + " " + l.description).toLowerCase().indexOf(q) !== -1; }); }
+    if (state.min !== "") list = list.filter(function (l) { return l.priceSek >= +state.min; });
+    if (state.max !== "") list = list.filter(function (l) { return l.priceSek <= +state.max; });
+    list.sort(function (a, b) {
+      if (state.sort === "cheapest") return a.priceSek - b.priceSek;
+      if (state.sort === "expensive") return b.priceSek - a.priceSek;
+      return b.createdAt - a.createdAt;
+    });
+
+    var chips = '<button class="chip" data-cat="all" data-active="' + (state.cat === "all") + '">' + icon("all") + t("all") + "</button>" +
+      CATEGORIES.map(function (c) { return '<button class="chip" data-cat="' + c[0] + '" data-active="' + (state.cat === c[0]) + '">' + icon(c[0]) + esc(catLabel(c[0])) + "</button>"; }).join("");
+
+    var cards = list.map(function (l) {
+      var img = l.images[0] ? '<img src="' + l.images[0] + '" alt="">' : icon(l.category);
+      return '<a class="card" href="#/listing/' + l.id + '"><div class="card__img">' + img +
+        '<span class="sticker' + (l.priceSek === 0 ? " sticker--free" : "") + '">' + price(l.priceSek) + "</span></div>" +
+        '<div class="card__body"><p class="card__title">' + esc(l.title) + '</p><p class="card__where">' + CAMPUS + "</p></div></a>";
+    }).join("");
+
+    app.innerHTML =
+      '<nav class="tabs"><a href="#/"' + (!freeOnly ? ' aria-current="page"' : "") + ">" + t("board") + '</a><a href="#/free"' + (freeOnly ? ' aria-current="page"' : "") + ">" + t("free") + "</a></nav>" +
+      '<p class="tagline">' + (freeOnly ? t("freeTag") : t("tagline")) + "</p>" +
+      '<div class="search"><label class="search__field">' +
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>' +
+      '<input id="q" type="search" placeholder="' + t("search") + '" value="' + esc(state.q) + '" autocomplete="off"></label>' +
+      '<button class="btn btn-ghost filter-btn" id="filters" type="button">' + t("filters") + "</button></div>" +
+      '<div class="chip-rail">' + chips + "</div>" +
+      '<p class="count">' + (list.length === 1 ? t("item") : t("items", list.length)) + "</p>" +
+      (list.length ? '<div class="grid">' + cards + "</div>" : '<div class="empty"><h3>' + t("empty") + "</h3><p>" + t("emptyHint") + "</p></div>") +
+      '<a class="btn btn-primary fab" href="#/sell">+ ' + t("sellFab") + "</a>";
+
+    var qi = document.getElementById("q");
+    qi.addEventListener("input", function () {
+      state.q = qi.value; var pos = qi.selectionStart; render(); var n = document.getElementById("q"); n.focus(); n.setSelectionRange(pos, pos);
+    });
+    app.querySelectorAll(".chip").forEach(function (b) { b.addEventListener("click", function () { state.cat = b.dataset.cat; render(); }); });
+    document.getElementById("filters").addEventListener("click", openFilters);
+  }
+
+  function viewListing(id) {
+    var l = listings.find(function (x) { return x.id === id; });
+    if (!l) { app.innerHTML = '<div class="empty"><h3>' + t("notFound") + '</h3><p><a class="btn btn-ghost" href="#/">' + t("back") + "</a></p></div>"; return; }
+    var left = Math.max(0, 60 - Math.floor((Date.now() - l.createdAt) / DAY));
+    app.innerHTML =
+      '<button class="back" onclick="history.length > 1 ? history.back() : (location.hash = \'#/\')">&larr; ' + t("back") + "</button>" +
+      '<div class="detail"><div class="gallery">' + (l.images[0] ? '<img src="' + l.images[0] + '" alt="">' : icon(l.category)) + "</div>" +
+      "<h1>" + esc(l.title) + "</h1>" +
+      '<span class="sticker' + (l.status === "SOLD" ? " sticker--sold" : l.priceSek === 0 ? " sticker--free" : "") + '">' + (l.status === "SOLD" ? t("sold") : price(l.priceSek)) + "</span>" +
+      '<div class="facts"><span>' + t("condition") + ": <b>" + condLabel(l.condition) + "</b></span><span>" + esc(catLabel(l.category)) + "</span><span>📍 " + CAMPUS + "</span><span>" + t("posted") + " " + ago(l.createdAt) + " · " + t("autoRemoved", left) + "</span></div>" +
+      '<p class="desc">' + esc(l.description) + "</p>" +
+      (l.status === "SOLD" ? '<div class="sold-banner">' + t("soldBanner") + "</div>" :
+        '<div class="cta"><button class="btn btn-wa" id="wa" type="button">' +
+        '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9 0-1.4.7-2 1-2.3.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.7-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.2Z"/></svg>' +
+        t("wa") + '</button><button class="btn btn-ghost" id="call" type="button">' + t("call") + " " + esc(l.phone) + '</button></div><p class="note">' + t("waNote") + "</p>") +
+      "</div>";
+    var wa = document.getElementById("wa"); if (wa) wa.onclick = function () { toast("WhatsApp → " + l.phone); };
+    var call = document.getElementById("call"); if (call) call.onclick = function () { toast("📞 " + l.phone); };
+  }
+
+  var draftPhotos = [];
+  function viewSell() {
+    draftPhotos = [];
+    var cats = CATEGORIES.map(function (c) { return '<option value="' + c[0] + '">' + esc(catLabel(c[0])) + "</option>"; }).join("");
+    var conds = CONDITIONS.map(function (c) { return '<option value="' + c[0] + '">' + condLabel(c[0]) + "</option>"; }).join("");
+    app.innerHTML =
+      '<form class="form" id="sell" novalidate><h1>' + t("sellTitle") + '</h1><p class="intro">' + t("lifecycle") + "</p>" +
+      '<div class="field"><span class="lbl">' + t("photos") + '</span><div class="photos" id="photos"></div><p class="hint">' + t("photosHint") + "</p>" +
+      '<input type="file" id="file" accept="image/*" multiple hidden></div>' +
+      '<div class="field"><label for="title">' + t("itemTitle") + '</label><input class="input" id="title" maxlength="80" placeholder="' + t("titlePh") + '"></div>' +
+      '<div class="field"><label for="desc">' + t("description") + '</label><textarea class="input" id="desc" maxlength="1000" placeholder="' + t("descPh") + '"></textarea></div>' +
+      '<div class="field"><label for="price">' + t("price") + '</label><input class="input" id="price" type="number" inputmode="numeric" min="0" max="100000" placeholder="0">' +
+      '<label class="check"><input type="checkbox" id="free"> ' + t("giveFree") + "</label></div>" +
+      '<div class="row"><div class="field"><label for="cat">' + t("category") + '</label><select class="input" id="cat"><option value="">' + t("selectOne") + "</option>" + cats + "</select></div>" +
+      '<div class="field"><label for="cond">' + t("condition") + '</label><select class="input" id="cond"><option value="">' + t("selectOne") + "</option>" + conds + "</select></div></div>" +
+      '<div class="field"><label for="phone">' + t("phone") + '</label><div class="phone"><select class="input" id="cc"><option>🇸🇪 +46</option><option>🇨🇾 +357</option><option>🇬🇷 +30</option><option>🇩🇪 +49</option><option>🇫🇮 +358</option></select>' +
+      '<input class="input" id="phone" type="tel" inputmode="tel" placeholder="70 123 45 67"></div><p class="hint">' + t("phoneHint") + "</p></div>" +
+      '<button class="btn btn-primary" style="width:100%;min-height:3.2rem;font-size:1.05rem" type="submit">' + t("publish") + "</button></form>";
+
+    renderPhotos();
+    var file = document.getElementById("file");
+    file.addEventListener("change", function () {
+      Array.prototype.slice.call(file.files, 0, 5 - draftPhotos.length).forEach(function (f) {
+        compress(f, function (url) { draftPhotos.push(url); renderPhotos(); });
+      });
+      file.value = "";
+    });
+    var free = document.getElementById("free"), priceIn = document.getElementById("price");
+    free.addEventListener("change", function () { priceIn.disabled = free.checked; if (free.checked) priceIn.value = ""; });
+    document.getElementById("sell").addEventListener("submit", submitSell);
+  }
+  function renderPhotos() {
+    var box = document.getElementById("photos"); if (!box) return;
+    box.innerHTML = draftPhotos.map(function (u) { return '<div class="photo"><img src="' + u + '" alt=""></div>'; }).join("") +
+      (draftPhotos.length < 5 ? '<button type="button" class="photo-add" id="add"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>' + t("addPhotos") + "</button>" : "");
+    var add = document.getElementById("add"); if (add) add.onclick = function () { document.getElementById("file").click(); };
+  }
+  // Client-side compression, same idea as the real app: longest side 1280px, JPEG ~0.8.
+  function compress(file, done) {
+    var r = new FileReader();
+    r.onload = function () {
+      var img = new Image();
+      img.onload = function () {
+        var s = Math.min(1, 1280 / Math.max(img.width, img.height));
+        var c = document.createElement("canvas"); c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        done(c.toDataURL("image/jpeg", 0.8));
+      };
+      img.src = r.result;
+    };
+    r.readAsDataURL(file);
+  }
+  function submitSell(e) {
+    e.preventDefault();
+    var f = function (id) { return document.getElementById(id); };
+    app.querySelectorAll(".error").forEach(function (n) { n.remove(); });
+    var bad = false;
+    function err(id, msg) { bad = true; var p = document.createElement("p"); p.className = "error"; p.textContent = msg; f(id).closest(".field").appendChild(p); }
+    if (!f("title").value.trim()) err("title", t("required"));
+    if (!f("free").checked && f("price").value === "") err("price", t("required"));
+    if (!f("cat").value) err("cat", t("required"));
+    if (!f("cond").value) err("cond", t("required"));
+    if (f("phone").value.replace(/\D/g, "").length < 7) err("phone", t("phoneBad"));
+    if (bad) { var first = app.querySelector(".error"); first.scrollIntoView({ block: "center", behavior: "smooth" }); return; }
+
+    var btn = app.querySelector('button[type="submit"]'); btn.disabled = true; btn.textContent = t("publishing");
+    var id = "u" + Date.now().toString(36), token = Math.random().toString(36).slice(2, 12) + Math.random().toString(36).slice(2, 12);
+    listings.unshift({
+      id: id, token: token, title: f("title").value.trim(), description: f("desc").value.trim() || "—",
+      priceSek: f("free").checked ? 0 : Math.max(0, Math.round(+f("price").value)), category: f("cat").value, condition: f("cond").value,
+      phone: f("cc").value.split(" ")[1] + " " + f("phone").value.trim(), images: draftPhotos.slice(), createdAt: Date.now(), status: "ACTIVE"
+    });
+    save();
+    setTimeout(function () { location.hash = "#/done/" + id; }, 500);
+  }
+
+  function viewDone(id) {
+    var l = listings.find(function (x) { return x.id === id; }); if (!l) { location.hash = "#/"; return; }
+    var link = location.href.split("#")[0] + "#/manage/" + l.token;
+    app.innerHTML = '<div class="success"><h1>' + t("liveTitle") + "</h1><p>" + t("liveIntro") + '</p><div class="linkbox"><code>' + esc(link) + '</code><button class="btn btn-ghost btn-sm" id="copy">' + t("copy") + "</button></div>" +
+      '<p style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><a class="btn btn-primary" href="#/listing/' + l.id + '">' + t("view") + '</a><a class="btn btn-ghost" href="#/manage/' + l.token + '">' + t("manage") + "</a></p></div>";
+    document.getElementById("copy").onclick = function () {
+      var b = this; (navigator.clipboard ? navigator.clipboard.writeText(link) : Promise.reject()).then(function () { b.textContent = t("copied"); }, function () { b.textContent = t("copied"); });
+    };
+  }
+
+  function viewManage(token) {
+    var l = listings.find(function (x) { return x.token === token; });
+    if (!l) { app.innerHTML = '<div class="empty"><h3>' + t("notFound") + "</h3></div>"; return; }
+    app.innerHTML = '<div class="form"><h1>' + t("manage") + '</h1><p class="intro">' + esc(l.title) + " · " + price(l.priceSek) + "</p>" +
+      '<div class="field"><label for="mt">' + t("itemTitle") + '</label><input class="input" id="mt" value="' + esc(l.title) + '"></div>' +
+      '<div class="field"><label for="mp">' + t("price") + '</label><input class="input" id="mp" type="number" min="0" value="' + l.priceSek + '"></div>' +
+      '<p style="display:grid;gap:10px"><button class="btn btn-primary" id="msave">' + (state.lang === "sv" ? "Spara ändringar" : "Save changes") + '</button>' +
+      '<button class="btn btn-ghost" id="msold">' + (l.status === "SOLD" ? t("markActive") : t("markSold")) + "</button>" +
+      '<button class="btn btn-ghost" id="mdel" style="color:#a4452a">' + t("del") + '</button></p><p class="note">' + t("soldNote") + "</p></div>";
+    document.getElementById("msave").onclick = function () { l.title = document.getElementById("mt").value.trim() || l.title; l.priceSek = Math.max(0, +document.getElementById("mp").value || 0); save(); toast(t("saved")); };
+    document.getElementById("msold").onclick = function () { l.status = l.status === "SOLD" ? "ACTIVE" : "SOLD"; save(); toast(t("saved")); viewManage(token); };
+    document.getElementById("mdel").onclick = function () { if (confirm(t("delConfirm"))) { listings = listings.filter(function (x) { return x !== l; }); save(); toast(t("deleted")); location.hash = "#/"; } };
+  }
+
+  // ---------- filter sheet ----------
+  var sheet = document.getElementById("sheet"), backdrop = document.getElementById("backdrop");
+  function openFilters() {
+    sheet.innerHTML = '<div class="sheet__grab"></div><h2 id="sheet-title">' + t("filters") + "</h2>" +
+      '<div class="field"><span class="lbl">' + t("price") + '</span><div class="row"><input class="input" id="fmin" type="number" min="0" placeholder="' + t("min") + '" value="' + state.min + '"><input class="input" id="fmax" type="number" min="0" placeholder="' + t("max") + '" value="' + state.max + '"></div></div>' +
+      '<div class="field"><label for="fsort">' + t("sort") + '</label><select class="input" id="fsort">' +
+      ["newest", "cheapest", "expensive"].map(function (s) { return '<option value="' + s + '"' + (state.sort === s ? " selected" : "") + ">" + t(s) + "</option>"; }).join("") + "</select></div>" +
+      '<div class="sheet__actions"><button class="btn btn-ghost" id="fclear">' + t("clear") + '</button><button class="btn btn-primary" id="fapply">' + t("apply") + "</button></div>";
+    sheet.classList.add("open"); backdrop.classList.add("open");
+    document.getElementById("fapply").onclick = function () { state.min = document.getElementById("fmin").value; state.max = document.getElementById("fmax").value; state.sort = document.getElementById("fsort").value; closeSheet(); render(); };
+    document.getElementById("fclear").onclick = function () { state.min = state.max = ""; state.sort = "newest"; state.cat = "all"; state.q = ""; closeSheet(); render(); };
+  }
+  function closeSheet() { sheet.classList.remove("open"); backdrop.classList.remove("open"); }
+  backdrop.onclick = closeSheet;
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeSheet(); });
+
+  var toastEl = document.getElementById("toast"), toastTimer;
+  function toast(msg) { toastEl.textContent = msg; toastEl.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(function () { toastEl.classList.remove("show"); }, 2200); }
+
+  // ---------- language ----------
+  document.querySelectorAll("[data-lang]").forEach(function (b) {
+    b.addEventListener("click", function () { state.lang = b.dataset.lang; try { localStorage.setItem("sssb-demo-lang", state.lang); } catch (e) {} render(); });
+  });
+
+  // ---------- router ----------
+  function render() {
+    document.documentElement.lang = state.lang;
+    document.querySelectorAll("[data-lang]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.lang === state.lang)); });
+    document.querySelectorAll("[data-t]").forEach(function (n) { n.textContent = t(n.dataset.t); });
+    var h = location.hash.replace(/^#/, "") || "/", m;
+    if ((m = h.match(/^\/listing\/(.+)$/))) viewListing(m[1]);
+    else if (h === "/sell") viewSell();
+    else if ((m = h.match(/^\/done\/(.+)$/))) viewDone(m[1]);
+    else if ((m = h.match(/^\/manage\/(.+)$/))) viewManage(m[1]);
+    else viewBoard(h === "/free");
+  }
+  var lastHash = location.hash;
+  window.addEventListener("hashchange", function () { closeSheet(); render(); if (location.hash !== lastHash) window.scrollTo(0, 0); lastHash = location.hash; });
+  render();
+})();
+</script>
+</body>
+</html>

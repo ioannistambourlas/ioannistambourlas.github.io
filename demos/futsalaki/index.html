@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Futsalaki venue dashboard — demo</title>
+<meta name="description" content="Interactive demo of the Futsalaki venue dashboard: calendar, matchmaking pool, bookings, pitches and revenue. Sample data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f8fafc; --card: #fff; --line: #eef0f3; --line-2: #e2e8f0;
+  --ink: #0f172a; --ink-2: #1e293b; --ink-3: #334155; --muted: #64748b; --faint: #94a3b8;
+  --green: #16a34a; --green-d: #15803d; --green-dd: #166534; --green-t: #f0fdf4; --green-t2: #dcfce7; --green-b: #86efac;
+  --blue: #1d4ed8; --blue-t: #dbeafe; --blue-t2: #eff6ff; --blue-b: #93c5fd;
+  --red: #b91c1c; --red-t: #fee2e2; --red-b: #fca5a5;
+  --amber: #b45309; --amber-t: #fef3c7; --amber-b: #fcd34d;
+  --purple: #7e22ce; --purple-t: #f3e8ff;
+  --orange: #c2410c; --orange-t: #ffedd5;
+  --shadow: 0 1px 2px rgb(15 23 42 / .04), 0 1px 3px rgb(15 23 42 / .04);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { font-family: Inter, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--ink-2); font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: inherit; }
+
+.demo-bar { position: sticky; top: 0; z-index: 60; background: #0f172a; color: #cbd5e1; font-size: 12.5px; padding: 7px 16px; display: flex; justify-content: space-between; gap: 12px; }
+.demo-bar a { color: #fff; text-decoration: underline; text-underline-offset: 2px; white-space: nowrap; }
+.demo-bar b { color: #fff; font-weight: 600; }
+
+.shell { display: grid; grid-template-columns: 222px 1fr; min-height: calc(100vh - 33px); }
+.side { background: #fff; border-right: 1px solid var(--line); display: flex; flex-direction: column; padding: 18px 12px; position: sticky; top: 33px; height: calc(100vh - 33px); }
+.brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14.5px; color: var(--ink); padding: 0 8px; }
+.brand i { width: 28px; height: 28px; border-radius: 8px; background: var(--green); color: #fff; font-style: normal; display: grid; place-items: center; font-size: 13px; font-weight: 700; }
+.venue { margin: 14px 0 18px; background: var(--bg); border-radius: 12px; padding: 8px 12px; }
+.venue small { display: block; color: var(--muted); font-size: 12px; }
+.venue b { font-weight: 600; color: var(--ink); }
+.nav { display: grid; gap: 2px; }
+.nav button { display: flex; align-items: center; gap: 12px; border: 0; background: none; text-align: left; padding: 10px 12px; border-radius: 10px; color: var(--ink-3); font-weight: 500; font-size: 14px; }
+.nav button svg { width: 17px; height: 17px; color: var(--faint); flex: none; }
+.nav button:hover { background: var(--bg); }
+.nav button[aria-current="page"] { background: var(--green); color: #fff; font-weight: 600; }
+.nav button[aria-current="page"] svg { color: #fff; }
+.side .nav--bottom { margin-top: auto; border-top: 1px solid var(--line); padding-top: 12px; }
+
+main { padding: 32px 40px 64px; min-width: 0; }
+.ph { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+.ph h1 { font-size: 24px; font-weight: 700; color: var(--ink); margin: 0; letter-spacing: -.01em; }
+.ph p { margin: 2px 0 0; color: var(--faint); font-size: 14px; }
+.ph__actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+.btn { border: 1px solid transparent; border-radius: 10px; padding: 9px 16px; font-weight: 600; font-size: 14px; background: #fff; }
+.btn-green { background: var(--green); color: #fff; }
+.btn-green:hover { background: var(--green-d); }
+.btn-soft { background: var(--green-t); color: var(--green-d); border-color: #bbf7d0; }
+.btn-line { border-color: var(--line-2); color: var(--ink-3); }
+.btn-line:hover { background: var(--bg); }
+.btn-red { background: #fff5f5; color: var(--red); border-color: #fecaca; }
+.btn[disabled] { opacity: .5; cursor: default; }
+.seg { display: inline-flex; border: 1px solid var(--line-2); border-radius: 10px; overflow: hidden; background: #fff; }
+.seg button { border: 0; background: none; padding: 7px 14px; font-size: 13px; font-weight: 500; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--green); color: #fff; font-weight: 600; }
+.seg--dark button[aria-pressed="true"] { background: var(--ink-2); }
+
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); }
+.card__head { padding: 18px 22px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.card__head b { color: var(--ink); font-weight: 600; }
+.card__head small { display: block; color: var(--faint); font-size: 12px; }
+.link { color: var(--green-d); font-weight: 500; font-size: 13px; background: none; border: 0; padding: 0; }
+
+/* overview */
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 28px; max-width: 1024px; }
+.stat { padding: 20px; }
+.stat i { display: block; width: 34px; height: 34px; border-radius: 10px; margin-bottom: 16px; }
+.stat b { display: block; font-size: 24px; font-weight: 700; line-height: 1.1; }
+.stat span { display: block; color: var(--ink-3); font-size: 14px; margin-top: 2px; }
+.stat small { color: var(--faint); font-size: 12px; }
+.sched { max-width: 1024px; }
+.row { display: grid; grid-template-columns: 110px 1fr auto; gap: 16px; align-items: center; padding: 14px 22px; border-top: 1px solid var(--line); }
+.row:first-child { border-top: 0; }
+.row .t b { display: block; color: var(--ink); font-weight: 600; }
+.row .t small, .row .w small { color: var(--faint); font-size: 12px; }
+.row .w b { color: var(--ink); font-weight: 600; }
+.vs { color: #cbd5e1; margin: 0 6px; font-size: 12px; }
+.empty { padding: 44px 20px; text-align: center; color: var(--muted); }
+
+.st { font-size: 12.5px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.st::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.st--confirmed { color: var(--green-d); } .st--pending { color: var(--amber); } .st--completed { color: var(--muted); } .st--cancelled { color: var(--red); } .st--awaiting { color: var(--purple); }
+.pill { display: inline-block; font-size: 12px; font-weight: 500; padding: 2px 10px; border-radius: 999px; white-space: nowrap; }
+.pill--confirmed { background: var(--green-t); color: var(--green-d); }
+.pill--pending { background: var(--amber-t); color: var(--amber); }
+.pill--completed { background: #f1f5f9; color: var(--muted); }
+.pill--cancelled { background: var(--red-t); color: var(--red); }
+.pill--awaiting { background: var(--purple-t); color: var(--purple); }
+.pill--app { background: var(--blue-t2); color: var(--blue); }
+.pill--manual { background: var(--orange-t); color: var(--orange); }
+.pill--Casual { background: var(--green-t); color: var(--green-d); }
+.pill--Intermediate { background: var(--amber-t); color: var(--amber); }
+.pill--Competitive { background: var(--red-t); color: var(--red); }
+.pill--active { background: var(--green-t); color: var(--green-d); }
+.pill--inactive { background: #f1f5f9; color: var(--muted); }
+.pill--expected { background: var(--orange-t); color: var(--orange); }
+.pill--paid { background: var(--green-t); color: var(--green-d); }
+
+/* calendar */
+.legend { display: flex; flex-wrap: wrap; gap: 18px; font-size: 12.5px; color: var(--muted); margin: -10px 0 14px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border-radius: 3px; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
+.chip { border: 1px solid var(--line-2); background: #fff; border-radius: 10px; padding: 5px 12px; font-size: 12.5px; font-weight: 500; color: var(--ink-3); min-width: 32px; }
+.chip[aria-pressed="true"] { background: var(--green); border-color: var(--green); color: #fff; font-weight: 600; }
+.pitchcal { margin-bottom: 20px; overflow: hidden; }
+.pitchcal__name { padding: 14px 20px; display: flex; align-items: center; gap: 10px; font-weight: 600; color: var(--ink); border-bottom: 1px solid var(--line); }
+.pitchcal__name::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+.week { display: grid; grid-template-columns: repeat(7, minmax(118px, 1fr)); overflow-x: auto; }
+.day { border-left: 1px solid var(--line); min-height: 104px; min-width: 0; }
+.day:first-child { border-left: 0; }
+.day__h { text-align: center; font-size: 12.5px; color: var(--muted); padding: 8px 4px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.day--today .day__h { background: var(--green-t); color: var(--green-d); font-weight: 600; }
+.day__b { padding: 6px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; align-content: start; }
+.day__none { text-align: center; color: #cbd5e1; padding: 14px 0; }
+.blk { border: 1px solid; border-radius: 8px; padding: 5px 8px; font-size: 12px; line-height: 1.35; text-align: left; width: 100%; min-width: 0; overflow: hidden; background: none; }
+.blk b { font-weight: 600; display: block; }
+.blk b em { font-style: normal; font-size: 10px; font-weight: 600; margin-left: 4px; opacity: .8; }
+.blk span { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.blk--match { background: var(--green-t); border-color: var(--green-b); color: var(--green-dd); }
+.blk--manual, .blk--event { background: var(--blue-t2); border-color: var(--blue-b); color: #1e40af; }
+.blk--pending { background: #fffbeb; border-color: var(--amber-b); color: var(--amber); }
+.blk--blocked { background: #fff1f2; border-color: var(--red-b); color: var(--red); }
+.blk--cancelled { opacity: .45; text-decoration: line-through; }
+
+/* matchmaking */
+.days { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.dchip { border: 1px solid var(--line-2); background: #fff; border-radius: 10px; min-width: 52px; padding: 5px 10px; text-align: center; line-height: 1.15; }
+.dchip small { display: block; font-size: 10px; font-weight: 600; color: var(--faint); text-transform: uppercase; letter-spacing: .03em; }
+.dchip b { font-size: 15px; color: var(--ink-3); }
+.dchip[aria-pressed="true"] { background: var(--ink-2); border-color: var(--ink-2); }
+.dchip[aria-pressed="true"] small, .dchip[aria-pressed="true"] b { color: #fff; }
+.dchip--all { font-weight: 600; font-size: 14px; color: var(--ink-3); }
+.dchip--all[aria-pressed="true"] { color: #fff; }
+.info { background: var(--blue-t2); border: 1px solid #dbeafe; color: var(--blue); border-radius: 14px; padding: 14px 20px; margin-bottom: 20px; max-width: 768px; font-size: 13px; }
+.info b { display: block; font-size: 14px; font-weight: 600; margin-bottom: 2px; color: #1e3a8a; }
+.info em { font-style: normal; font-weight: 600; }
+.pool { max-width: 768px; margin-bottom: 20px; }
+.pool__h { padding: 14px 20px; border-bottom: 1px solid var(--line); font-weight: 600; color: var(--ink); display: flex; justify-content: space-between; }
+.pool__h small { color: var(--faint); font-weight: 500; }
+.entry { display: grid; grid-template-columns: 1fr auto auto; gap: 14px; align-items: center; padding: 14px 20px; border-top: 1px solid var(--line); }
+.entry:first-of-type { border-top: 0; }
+.entry b { color: var(--ink); font-weight: 600; }
+.entry small { display: block; color: var(--faint); font-size: 12px; }
+.x { border: 1px solid var(--line-2); background: #fff; border-radius: 8px; padding: 5px 10px; font-size: 12.5px; color: var(--muted); }
+.x:hover { color: var(--red); border-color: #fecaca; }
+
+/* tables */
+.tbl-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; font-size: 11.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--faint); padding: 14px 20px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 15px 20px; border-bottom: 1px solid var(--line); color: var(--ink-3); vertical-align: middle; }
+tr:last-child td { border-bottom: 0; }
+td b { color: var(--ink); font-weight: 600; }
+td small { display: block; color: var(--faint); font-size: 12px; }
+.filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; align-items: center; }
+.pager { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-top: 1px solid var(--line); color: var(--faint); font-size: 12.5px; }
+.pager button { border: 0; background: none; color: var(--muted); }
+.pager button[disabled] { color: #cbd5e1; cursor: default; }
+
+/* pitches */
+.narrow { max-width: 672px; }
+.addp { padding: 20px; margin-bottom: 20px; }
+.addp label { display: block; font-weight: 600; color: var(--ink); margin-bottom: 10px; }
+.addp div { display: flex; gap: 8px; }
+.in { width: 100%; border: 1px solid var(--line-2); border-radius: 10px; padding: 9px 14px; background: #fff; outline: 0; }
+.in:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgb(22 163 74 / .12); }
+.dotname { display: inline-flex; align-items: center; gap: 10px; }
+.dotname::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+.dotname--blue::before { background: #3b82f6; }
+.dotname--off::before { background: #cbd5e1; }
+.price { border: 1px dashed transparent; background: none; border-radius: 6px; padding: 2px 6px; color: var(--ink-3); }
+.price:hover { border-color: var(--line-2); }
+.price-in { width: 84px; padding: 4px 8px; }
+.sub { display: flex; justify-content: space-between; align-items: flex-end; margin: 28px 0 12px; }
+.sub h2 { margin: 0; font-size: 17px; color: var(--ink); }
+.sub p { margin: 0; color: var(--faint); font-size: 12.5px; }
+
+/* revenue */
+.total { background: var(--green); color: #fff; border-radius: 16px; padding: 24px; margin-bottom: 20px; max-width: 896px; }
+.total small { font-size: 14px; opacity: .92; }
+.total b { display: block; font-size: 36px; font-weight: 800; letter-spacing: -.02em; margin: 2px 0 6px; }
+.total span { font-size: 14px; opacity: .92; }
+.rcards { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; margin-bottom: 20px; max-width: 896px; }
+.rcard { padding: 20px; }
+.rcard b { display: block; color: var(--ink); font-weight: 600; }
+.rcard small { color: var(--faint); font-size: 12px; display: block; }
+.rcard strong { display: block; font-size: 22px; font-weight: 700; color: var(--ink); margin: 18px 0 2px; }
+.chart { max-width: 896px; margin-bottom: 20px; }
+.chart svg { display: block; width: 100%; height: 240px; }
+.chart .tip { font-size: 12px; fill: var(--ink); font-weight: 600; }
+.wide { max-width: 896px; }
+
+/* settings */
+.set { max-width: 672px; margin-bottom: 20px; }
+.set__row { display: flex; align-items: center; gap: 16px; padding: 14px 22px; border-top: 1px solid var(--line); }
+.set__row:first-of-type { border-top: 0; }
+.set__row .grow { flex: 1; }
+.set__row b { color: var(--ink); font-weight: 600; font-size: 14px; }
+.set__row small { display: block; color: var(--faint); font-size: 12px; }
+.tog { width: 44px; height: 24px; border-radius: 999px; background: #cbd5e1; border: 0; position: relative; flex: none; transition: background .15s; }
+.tog::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform .15s; box-shadow: 0 1px 2px rgb(0 0 0 / .2); }
+.tog[aria-pressed="true"] { background: var(--green); }
+.tog[aria-pressed="true"]::after { transform: translateX(20px); }
+.hrs { display: flex; align-items: center; gap: 8px; color: var(--faint); font-size: 12px; }
+.hrs select { border: 1px solid var(--line-2); border-radius: 8px; padding: 5px 8px; background: #fff; }
+.set__foot { display: flex; justify-content: flex-end; padding: 14px 22px; border-top: 1px solid var(--line); }
+.stripe { display: flex; align-items: center; gap: 12px; }
+.stripe i { width: 36px; height: 36px; border-radius: 10px; background: #eef2ff; color: #4f46e5; display: grid; place-items: center; font-style: normal; font-weight: 800; }
+
+/* modal */
+.scrim { position: fixed; inset: 0; background: rgb(15 23 42 / .45); z-index: 70; display: none; align-items: flex-start; justify-content: center; padding: 64px 16px; overflow-y: auto; }
+.scrim.open { display: flex; }
+.modal { background: #fff; border-radius: 18px; width: 100%; max-width: 460px; box-shadow: 0 24px 60px -20px rgb(15 23 42 / .35); }
+.modal__h { padding: 20px 24px 6px; display: flex; justify-content: space-between; align-items: flex-start; }
+.modal__h h3 { margin: 0; font-size: 17px; color: var(--ink); }
+.modal__h p { margin: 2px 0 0; color: var(--faint); font-size: 13px; }
+.modal__h button { border: 0; background: none; color: var(--faint); font-size: 20px; line-height: 1; padding: 4px; }
+.modal__b { padding: 12px 24px 4px; }
+.modal__f { padding: 16px 24px 22px; display: flex; gap: 8px; justify-content: flex-end; }
+.f { margin-bottom: 14px; }
+.f > label, .f > .lbl { display: block; font-size: 13px; font-weight: 500; color: var(--ink-3); margin-bottom: 6px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.opts { display: flex; gap: 6px; flex-wrap: wrap; }
+.opts button { border: 1px solid var(--line-2); background: #fff; border-radius: 9px; padding: 6px 12px; font-size: 13px; color: var(--ink-3); }
+.opts button[aria-pressed="true"] { border-color: var(--green); background: var(--green-t); color: var(--green-d); font-weight: 600; }
+.conf { border-radius: 10px; padding: 8px 12px; font-size: 12.5px; margin-bottom: 6px; }
+.conf--move { background: var(--green-t); color: var(--green-d); }
+.conf--manual { background: var(--amber-t); color: var(--amber); }
+.conf--refund { background: var(--red-t); color: var(--red); }
+.kv { display: grid; grid-template-columns: 100px 1fr; gap: 6px 12px; font-size: 13.5px; margin-bottom: 8px; }
+.kv dt { color: var(--faint); }
+.kv dd { margin: 0; color: var(--ink-2); }
+
+.toast { position: fixed; right: 24px; bottom: 24px; background: var(--ink); color: #fff; border-radius: 12px; padding: 12px 16px; font-size: 13.5px; font-weight: 500; max-width: 360px; box-shadow: 0 12px 30px -10px rgb(0 0 0 / .4); transform: translateY(20px); opacity: 0; transition: .2s; z-index: 80; pointer-events: none; }
+.toast.show { transform: none; opacity: 1; }
+.toast b { color: #86efac; }
+
+@media (max-width: 900px) {
+  .shell { grid-template-columns: 1fr; }
+  .side { position: static; height: auto; flex-direction: row; align-items: center; gap: 12px; padding: 10px 12px; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+  .venue { display: none; }
+  .nav { display: flex; }
+  .nav button { padding: 7px 10px; white-space: nowrap; }
+  .nav button svg { display: none; }
+  .side .nav--bottom { margin: 0; border: 0; padding: 0; }
+  main { padding: 22px 16px 48px; }
+  .stats, .rcards { grid-template-columns: 1fr 1fr; }
+  .row { grid-template-columns: 70px 1fr; }
+  .row > :last-child { grid-column: 2; }
+}
+</style>
+</head>
+<body>
+
+<div class="demo-bar">
+  <span><b>Futsalaki venue dashboard</b> &middot; interactive demo with sample data &mdash; nothing is sent anywhere</span>
+  <a href="../../#futsalaki">&larr; Ioannis Tambourlas</a>
+</div>
+
+<div class="shell">
+  <aside class="side">
+    <div class="brand"><i>F</i>Futsalaki</div>
+    <div class="venue"><small>Venue</small><b>Demo Arena, Nicosia</b></div>
+    <nav class="nav" id="nav">
+      <button data-page="overview"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>Overview</button>
+      <button data-page="calendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Calendar</button>
+      <button data-page="matchmaking"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.5a5 5 0 0 1 6 5"/></svg>Matchmaking</button>
+      <button data-page="bookings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>Bookings</button>
+      <button data-page="pitches"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M12 5v14"/><circle cx="12" cy="12" r="2.5"/></svg>Pitches</button>
+      <button data-page="customers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Customers</button>
+      <button data-page="revenue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Revenue</button>
+      <button data-page="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>Settings</button>
+    </nav>
+    <nav class="nav nav--bottom">
+      <button data-page="support"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Support</button>
+    </nav>
+  </aside>
+  <main id="main"></main>
+</div>
+
+<div class="scrim" id="scrim"><div class="modal" id="modal" role="dialog" aria-modal="true"></div></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------------- helpers ----------------
+  function pad(n) { return String(n).padStart(2, "0"); }
+  function ymd(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function parse(s) { var p = s.split("-").map(Number); return new Date(p[0], p[1] - 1, p[2]); }
+  function addDays(d, n) { var x = new Date(d); x.setDate(x.getDate() + n); return x; }
+  function hm(h) { var m = Math.round((h % 1) * 60); return pad(Math.floor(h)) + ":" + pad(m); }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function eur(n) { return "€" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function dshort(s) { return parse(s).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); }
+  function dday(s) { return parse(s).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }); }
+  function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+  var today = new Date(); today.setHours(0, 0, 0, 0);
+  var TODAY = ymd(today);
+  var now = new Date(), nowH = now.getHours() + now.getMinutes() / 60;
+  var monday = addDays(today, -((today.getDay() + 6) % 7));
+  var monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+  var monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+  // ---------------- data ----------------
+  var pitches = [1, 2, 3, 4, 5].map(function (n) { return { id: n, name: String(n), price: 70, active: true }; });
+  var combos = [{ id: "c1", name: "Full Field A", a: 1, b: 2, price: 90, active: true }, { id: "c2", name: "Full Field B", a: 3, b: 4, price: 90, active: true }];
+  var TEAMS = ["Strovolos United", "Engomi FC", "Lakatamia Lions", "Aglantzia Rovers", "Old Boys Nicosia", "Kaimakli 5", "Latsia Athletic", "Dasoupoli FC", "Pallouriotissa", "Makedonitissa Stars", "Acropolis FC", "Ayios Dometios", "Anthoupoli Rangers", "Egkomi Veterans", "Tseri Town", "Geri Wanderers"];
+  var LEVEL = {}; TEAMS.forEach(function (t, i) { LEVEL[t] = ["Casual", "Intermediate", "Competitive"][i % 3]; });
+  var WALKINS = ["Andreas K.", "Marios P.", "Office league — PwC", "Christos G.", "Nikos & friends", "KPMG Thursday", "Stelios M.", "Uni of Cyprus CS", "George L.", "Panos C."];
+
+  var bookings = [], seq = 1;
+  function add(b) { b.id = "b" + (seq++); bookings.push(b); return b; }
+  function overlaps(a1, a2, b1, b2) { return a1 < b2 && b1 < a2; }
+  function conflicts(date, s, e, pids, ignore) {
+    return bookings.filter(function (b) { return !b.cancelled && b.id !== ignore && b.date === date && overlaps(s, e, b.start, b.end) && b.pitches.some(function (p) { return pids.indexOf(p) !== -1; }); });
+  }
+  function free(date, s, e, pids) { return conflicts(date, s, e, pids).length === 0; }
+  function priceOf(pids) { if (pids.length === 2) { var c = combos.find(function (c) { return (c.a === pids[0] && c.b === pids[1]) || (c.a === pids[1] && c.b === pids[0]); }); return c ? c.price : 90; } var p = pitches.find(function (p) { return p.id === pids[0]; }); return p ? p.price : 70; }
+
+  // fixed items
+  var wd = function (i) { return ymd(addDays(monday, i)); };
+  add({ date: wd(5), start: 9, end: 13, pitches: [5], kind: "blocked", reason: "Maintenance — new nets" });
+  add({ date: wd(6), start: 10, end: 15, pitches: [2], kind: "event", home: "Birthday — Christodoulou family", amount: 300, paid: true, method: "Card", phone: "+357 99 000 111" });
+  add({ date: wd(2), start: 8, end: 12, pitches: [1], kind: "blocked", reason: "School booking" });
+
+  // generated history + next two weeks
+  var rnd = mulberry32(2026);
+  function pick(arr) { return arr[Math.floor(rnd() * arr.length)]; }
+  function twoTeams() { var a = pick(TEAMS), b; do { b = pick(TEAMS); } while (b === a); return [a, b]; }
+  for (var d = new Date(monthStart); d <= addDays(monday, 13); d = addDays(d, 1)) {
+    var ds = ymd(d), future = d >= today;
+    // 7v7 on a combo
+    if (rnd() < 0.25) {
+      var c = pick(combos), h7 = pick([19, 20, 21]);
+      if (free(ds, h7, h7 + 1, [c.a, c.b])) {
+        if (rnd() < 0.5) { var tt = twoTeams(); add({ date: ds, start: h7, end: h7 + 1, pitches: [c.a, c.b], kind: "match", home: tt[0], away: tt[1], format: "7v7", amount: c.price, scored: rnd() < 0.85 }); }
+        else add({ date: ds, start: h7, end: h7 + 1, pitches: [c.a, c.b], kind: "manual", home: pick(WALKINS), format: "7v7", amount: c.price, paid: !future && rnd() < 0.9, method: pick(["Cash", "Card", "Cash"]) });
+      }
+    }
+    pitches.forEach(function (p) {
+      var h = 17 + (rnd() < 0.5 ? 0 : 1);
+      while (h < 23) {
+        if (rnd() < 0.68) { h += 1; continue; }
+        var dur = rnd() < 0.2 ? 1.5 : 1;
+        if (h + dur > 23) break;
+        if (!free(ds, h, h + dur, [p.id])) { h += 1; continue; }
+        var r = rnd();
+        if (r < 0.5) { var t2 = twoTeams(); add({ date: ds, start: h, end: h + dur, pitches: [p.id], kind: "match", home: t2[0], away: t2[1], format: "5v5", amount: p.price * dur, scored: rnd() < 0.85 }); }
+        else if (r < 0.9 || !future) add({ date: ds, start: h, end: h + dur, pitches: [p.id], kind: "manual", home: pick(WALKINS), format: "5v5", amount: p.price * dur, paid: !future && rnd() < 0.9, method: pick(["Cash", "Card", "Bank transfer"]), phone: "+357 99 " + Math.floor(100000 + rnd() * 899999) });
+        else add({ date: ds, start: h, end: h + dur, pitches: [p.id], kind: "pending", home: pick(TEAMS), format: "5v5", amount: 0 });
+        h += dur;
+      }
+    });
+  }
+  // a couple of late cancellations that kept a forfeit
+  bookings.filter(function (b) { return b.kind === "match" && b.date < TODAY; }).slice(3, 5).forEach(function (b) { b.cancelled = true; b.forfeit = 35; });
+  // make sure the most recent past app matches are still waiting for a score
+  bookings.filter(function (b) { return b.kind === "match" && b.date < TODAY && !b.cancelled; }).slice(-2).forEach(function (b) { b.scored = false; });
+
+  var pool = [
+    { id: "p1", team: "Kaimakli 5", level: "Intermediate", date: TODAY, from: 19, to: 22, format: "5v5", source: "App" },
+    { id: "p2", team: "Latsia Athletic", level: "Casual", date: ymd(addDays(today, 1)), from: 18, to: 21, format: "5v5", source: "App" },
+    { id: "p3", team: "Marios P.", level: "Competitive", date: ymd(addDays(today, 2)), from: 20, to: 22, format: "7v7", source: "Walk-in", phone: "+357 99 481 220" },
+    { id: "p4", team: "Tseri Town", level: "Intermediate", date: ymd(addDays(today, 3)), from: 18, to: 20, format: "5v5", source: "App" }
+  ];
+  var poolSeq = 5;
+
+  var settings = { available: true, hours: [1, 1, 1, 1, 1, 1, 1].map(function () { return { open: true, from: 8, to: 23 }; }) };
+
+  function status(b) {
+    if (b.cancelled) return "cancelled";
+    if (b.kind === "pending") return "pending";
+    var past = b.date < TODAY || (b.date === TODAY && b.end <= nowH);
+    if (past) return b.kind === "match" && !b.scored ? "awaiting" : "completed";
+    return "confirmed";
+  }
+  var ST_LABEL = { confirmed: "Confirmed", pending: "Pending", completed: "Completed", cancelled: "Cancelled", awaiting: "Awaiting score" };
+  function pname(pids) { return pids.join(" + "); }
+  function title(b) { return b.kind === "match" ? esc(b.home) + '<span class="vs">vs</span>' + esc(b.away) : b.kind === "blocked" ? "Blocked" : esc(b.home); }
+  function typeLabel(b) { return b.kind === "event" ? "Event Booking" : (b.format || "5v5") + " Match"; }
+
+  // ---------------- UI plumbing ----------------
+  var main = document.getElementById("main");
+  var state = { page: "overview", weekOffset: 0, pitchFilter: "all", poolDay: "all", src: "all", st: "all", bpage: 0, period: "month", custTab: "app" };
+
+  function go(page) {
+    state.page = page;
+    document.querySelectorAll("[data-page]").forEach(function (b) { b.setAttribute("aria-current", b.dataset.page === page ? "page" : "false"); });
+    try { history.replaceState(null, "", "#" + page); } catch (e) {}
+    render(); window.scrollTo(0, 0);
+  }
+  document.querySelectorAll("[data-page]").forEach(function (b) { b.addEventListener("click", function () { go(b.dataset.page); }); });
+
+  var toastEl = document.getElementById("toast"), tt;
+  function toast(html) { toastEl.innerHTML = html; toastEl.classList.add("show"); clearTimeout(tt); tt = setTimeout(function () { toastEl.classList.remove("show"); }, 3600); }
+
+  var scrim = document.getElementById("scrim"), modal = document.getElementById("modal");
+  function openModal(html, bind) { modal.innerHTML = html; scrim.classList.add("open"); modal.querySelectorAll("[data-close]").forEach(function (b) { b.onclick = closeModal; }); if (bind) bind(modal); }
+  function closeModal() { scrim.classList.remove("open"); }
+  scrim.addEventListener("click", function (e) { if (e.target === scrim) closeModal(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeModal(); });
+  function mh(t, sub) { return '<div class="modal__h"><div><h3>' + t + "</h3>" + (sub ? "<p>" + sub + "</p>" : "") + '</div><button data-close aria-label="Close">&times;</button></div>'; }
+  function opts(name, values, cur) { return '<div class="opts" data-opt="' + name + '">' + values.map(function (v) { var val = Array.isArray(v) ? v[0] : v, lab = Array.isArray(v) ? v[1] : v; return '<button type="button" data-v="' + val + '" aria-pressed="' + (String(val) === String(cur)) + '">' + lab + "</button>"; }).join("") + "</div>"; }
+  function bindOpts(root) { root.querySelectorAll("[data-opt]").forEach(function (g) { g.querySelectorAll("button").forEach(function (b) { b.onclick = function () { g.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); }); g.dispatchEvent(new Event("change")); }; }); }); }
+  function optVal(root, name) { var b = root.querySelector('[data-opt="' + name + '"] [aria-pressed="true"]'); return b ? b.dataset.v : null; }
+  function hourOptions(from, to, sel, step) { var s = ""; for (var h = from; h <= to; h += (step || 0.5)) s += '<option value="' + h + '"' + (h === sel ? " selected" : "") + ">" + hm(h) + "</option>"; return s; }
+
+  // ---------------- pages ----------------
+  function ph(t, sub, actions) { return '<div class="ph"><div><h1>' + t + "</h1><p>" + sub + '</p></div><div class="ph__actions">' + (actions || "") + "</div></div>"; }
+
+  function pageOverview() {
+    var tb = bookings.filter(function (b) { return b.date === TODAY && b.kind !== "blocked"; }).sort(function (a, b) { return a.start - b.start; });
+    var weekEnd = ymd(addDays(monday, 6)), weekStart = ymd(monday);
+    var todayMatches = tb.filter(function (b) { return !b.cancelled && b.kind !== "pending"; }).length;
+    var week = bookings.filter(function (b) { return b.date >= weekStart && b.date <= weekEnd && !b.cancelled && (b.kind === "match" || b.kind === "manual"); }).length;
+    var revToday = tb.filter(function (b) { return !b.cancelled; }).reduce(function (s, b) { return s + (b.amount || 0); }, 0);
+    var manualToday = tb.filter(function (b) { return b.kind === "manual" && !b.cancelled; }).length;
+    var S = [
+      [todayMatches, "Today's matches", "confirmed", "#15803d", "#f0fdf4"],
+      [pool.length, "Teams in pool", "waiting", "#b45309", "#fffbeb"],
+      [week, "This week", "matches", "#1d4ed8", "#eff6ff"],
+      [pitches.filter(function (p) { return p.active; }).length, "Active pitches", "available", "#7e22ce", "#faf5ff"],
+      [eur(revToday).replace(".00", ""), "Revenue today", "all bookings", "#047857", "#ecfdf5"],
+      [manualToday, "Manual bookings", "today", "#c2410c", "#fff7ed"]
+    ];
+    main.innerHTML = ph("Overview", today.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })) +
+      '<div class="stats">' + S.map(function (s) { return '<div class="card stat"><i style="background:' + s[4] + '"></i><b style="color:' + s[3] + '">' + s[0] + "</b><span>" + s[1] + "</span><small>" + s[2] + "</small></div>"; }).join("") + "</div>" +
+      '<div class="card sched"><div class="card__head"><div><b>Today\'s Schedule</b><small>' + tb.length + ' bookings today</small></div><button class="link" data-go="calendar">Full calendar &rarr;</button></div>' +
+      (tb.length ? tb.map(function (b) { var s = status(b); return '<div class="row"><div class="t"><b>' + hm(b.start) + "</b><small>" + hm(b.end) + '</small></div><div class="w"><b>' + title(b) + "</b><br><small>Pitch " + pname(b.pitches) + " · " + (b.kind === "match" ? "App" : b.kind === "pending" ? "Waiting for opponent" : "Manual") + '</small></div><span class="st st--' + s + '">' + ST_LABEL[s] + "</span></div>"; }).join("") : '<div class="empty">Nothing booked today.</div>') + "</div>";
+    main.querySelectorAll("[data-go]").forEach(function (b) { b.onclick = function () { go(b.dataset.go); }; });
+  }
+
+  function pageCalendar() {
+    var start = addDays(monday, state.weekOffset * 7), days = [];
+    for (var i = 0; i < 7; i++) days.push(addDays(start, i));
+    var list = state.pitchFilter === "all" ? pitches : pitches.filter(function (p) { return String(p.id) === String(state.pitchFilter); });
+    var sub = "Weekly view — " + (state.pitchFilter === "all" ? "all pitches" : "pitch " + state.pitchFilter);
+    main.innerHTML = ph("Calendar", sub,
+      '<button class="btn btn-red" id="block">Block Pitch</button><button class="btn btn-line" id="prev" aria-label="Previous week">&larr;</button><button class="btn btn-line" id="thisw">This week</button><button class="btn btn-line" id="next" aria-label="Next week">&rarr;</button>') +
+      '<div class="legend"><span><i style="background:#4ade80"></i>Matchmaking</span><span><i style="background:#60a5fa"></i>Manual booking</span><span><i style="background:#fbbf24"></i>Pending (no opponent)</span><span><i style="background:#f87171"></i>Blocked</span></div>' +
+      '<div class="chips"><button class="chip" data-p="all" aria-pressed="' + (state.pitchFilter === "all") + '">All pitches</button>' + pitches.map(function (p) { return '<button class="chip" data-p="' + p.id + '" aria-pressed="' + (String(state.pitchFilter) === String(p.id)) + '">' + p.name + "</button>"; }).join("") + "</div>" +
+      list.map(function (p) {
+        return '<div class="card pitchcal"><div class="pitchcal__name">Pitch ' + esc(p.name) + (p.active ? "" : ' <span class="pill pill--inactive">Inactive</span>') + '</div><div class="week">' + days.map(function (d) {
+          var ds = ymd(d), items = bookings.filter(function (b) { return b.date === ds && b.pitches.indexOf(p.id) !== -1; }).sort(function (a, b) { return a.start - b.start; });
+          return '<div class="day' + (ds === TODAY ? " day--today" : "") + '"><div class="day__h">' + d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }) + '</div><div class="day__b">' +
+            (items.length ? items.map(function (b) {
+              return '<button class="blk blk--' + b.kind + (b.cancelled ? " blk--cancelled" : "") + '" data-b="' + b.id + '"><b>' + hm(b.start) + "–" + hm(b.end) + (b.format === "7v7" ? "<em>7v7</em>" : "") + "</b><span>" + (b.kind === "blocked" ? "Blocked" : b.kind === "match" ? esc(b.home) + " vs " + esc(b.away) : esc(b.home)) + "</span></button>";
+            }).join("") : '<div class="day__none">—</div>') + "</div></div>";
+        }).join("") + "</div></div>";
+      }).join("");
+    main.querySelector("#prev").onclick = function () { state.weekOffset--; render(); };
+    main.querySelector("#next").onclick = function () { state.weekOffset++; render(); };
+    main.querySelector("#thisw").onclick = function () { state.weekOffset = 0; render(); };
+    main.querySelector("#block").onclick = blockModal;
+    main.querySelectorAll("[data-p]").forEach(function (b) { b.onclick = function () { state.pitchFilter = b.dataset.p; render(); }; });
+    main.querySelectorAll("[data-b]").forEach(function (b) { b.onclick = function () { bookingModal(b.dataset.b); }; });
+  }
+
+  function bookingModal(id) {
+    var b = bookings.find(function (x) { return x.id === id; }); if (!b) return;
+    var s = status(b);
+    var body = '<dl class="kv"><dt>When</dt><dd>' + dday(b.date) + ", " + hm(b.start) + "–" + hm(b.end) + "</dd><dt>Pitch</dt><dd>" + pname(b.pitches) + (b.format ? " · " + b.format : "") + "</dd>";
+    if (b.kind === "blocked") body += "<dt>Reason</dt><dd>" + esc(b.reason || "—") + "</dd>";
+    else {
+      if (b.kind === "match") body += "<dt>Home</dt><dd>" + esc(b.home) + ' <span class="pill pill--' + LEVEL[b.home] + '">' + LEVEL[b.home] + "</span></dd><dt>Away</dt><dd>" + esc(b.away) + "</dd>";
+      else body += "<dt>Booked by</dt><dd>" + esc(b.home) + (b.phone ? "<br><small>" + esc(b.phone) + "</small>" : "") + "</dd>";
+      body += '<dt>Source</dt><dd><span class="pill pill--' + (b.kind === "match" ? "app" : "manual") + '">' + (b.kind === "match" ? "App" : "Manual") + '</span></dd><dt>Status</dt><dd><span class="pill pill--' + s + '">' + ST_LABEL[s] + "</span></dd>";
+      if (b.amount) body += "<dt>Amount</dt><dd>" + eur(b.amount) + (b.kind === "match" ? " · paid in app" : b.paid ? " · " + (b.method || "") + " · paid" : " · expected") + "</dd>";
+    }
+    body += "</dl>";
+    var canCancel = !b.cancelled && s !== "completed" && s !== "awaiting";
+    openModal(mh(b.kind === "blocked" ? "Blocked slot" : "Booking details") + '<div class="modal__b">' + body + '</div><div class="modal__f">' +
+      (b.kind === "match" && canCancel ? '<button class="btn btn-line" id="c1">Cancel one team</button>' : "") +
+      (canCancel ? '<button class="btn btn-red" id="cx">' + (b.kind === "blocked" ? "Remove block" : "Cancel reservation") + "</button>" : "") +
+      '<button class="btn btn-line" data-close>Close</button></div>', function (m) {
+      var cx = m.querySelector("#cx");
+      if (cx) cx.onclick = function () {
+        if (b.kind === "blocked") { bookings.splice(bookings.indexOf(b), 1); toast("Block removed"); }
+        else { b.cancelled = true; toast(b.kind === "match" ? "Match cancelled · <b>" + eur(b.amount) + " refunded</b> to both teams via Stripe" : "Reservation cancelled"); }
+        closeModal(); render();
+      };
+      var c1 = m.querySelector("#c1");
+      if (c1) c1.onclick = function () {
+        b.cancelled = true;
+        pool.push({ id: "p" + (poolSeq++), team: b.home, level: LEVEL[b.home] || "Intermediate", date: b.date, from: b.start, to: b.end, format: b.format || "5v5", source: "App" });
+        toast(esc(b.away) + " removed and refunded · <b>" + esc(b.home) + " is back in the pool</b>");
+        closeModal(); render();
+      };
+    });
+  }
+
+  function blockModal() {
+    var dflt = ymd(addDays(today, 1));
+    openModal(mh("Block Pitch", "Maintenance, private events — anything that takes a pitch out of play.") + '<div class="modal__b">' +
+      '<div class="two"><div class="f"><label>Pitch</label><select class="in" id="bp">' + pitches.map(function (p) { return '<option value="' + p.id + '">Pitch ' + p.name + "</option>"; }).join("") + '</select></div>' +
+      '<div class="f"><label>Date</label><input class="in" type="date" id="bd" value="' + dflt + '"></div></div>' +
+      '<div class="two"><div class="f"><label>From</label><select class="in" id="bf">' + hourOptions(8, 22.5, 18) + '</select></div><div class="f"><label>To</label><select class="in" id="bt">' + hourOptions(8.5, 23, 21) + "</select></div></div>" +
+      '<div class="f"><label>Reason (optional)</label><input class="in" id="br" placeholder="e.g. Maintenance"></div><div id="bc"></div></div>' +
+      '<div class="modal__f"><button class="btn btn-line" data-close>Cancel</button><button class="btn btn-red" id="chk">Check &amp; Block</button></div>', function (m) {
+      var checked = null;
+      function read() { return { p: +m.querySelector("#bp").value, d: m.querySelector("#bd").value, f: +m.querySelector("#bf").value, t: +m.querySelector("#bt").value, r: m.querySelector("#br").value.trim() }; }
+      function plan(v) {
+        return conflicts(v.d, v.f, v.t, [v.p]).filter(function (b) { return b.kind !== "blocked"; }).map(function (b) {
+          var alt = b.pitches.length === 1 ? pitches.find(function (p) { return p.active && p.id !== v.p && free(v.d, b.start, b.end, [p.id]); }) : null;
+          return { b: b, action: alt ? "move" : b.kind === "match" ? "refund" : "manual", to: alt && alt.id };
+        });
+      }
+      ["#bp", "#bd", "#bf", "#bt"].forEach(function (s) { m.querySelector(s).onchange = function () { checked = null; m.querySelector("#bc").innerHTML = ""; m.querySelector("#chk").textContent = "Check & Block"; }; });
+      m.querySelector("#chk").onclick = function () {
+        var v = read();
+        if (!v.d || v.t <= v.f) { toast("Pick a valid date and time range"); return; }
+        if (!checked) {
+          checked = plan(v);
+          m.querySelector("#bc").innerHTML = checked.length ? checked.map(function (c) {
+            var who = c.b.kind === "match" ? esc(c.b.home) + " vs " + esc(c.b.away) : esc(c.b.home);
+            return c.action === "move" ? '<div class="conf conf--move">' + hm(c.b.start) + " " + who + " — moves to pitch " + c.to + "</div>" :
+              c.action === "refund" ? '<div class="conf conf--refund">' + hm(c.b.start) + " " + who + " — cancelled, refunded automatically</div>" :
+              '<div class="conf conf--manual">' + hm(c.b.start) + " " + who + " — manual booking, call " + esc(c.b.phone || "the customer") + " to cancel</div>";
+          }).join("") : '<div class="conf conf--move">No conflicts — the pitch is free.</div>';
+          this.textContent = "Confirm & Block";
+          return;
+        }
+        checked.forEach(function (c) { if (c.action === "move") c.b.pitches = [c.to]; else if (c.action === "refund") c.b.cancelled = true; });
+        add({ date: v.d, start: v.f, end: v.t, pitches: [v.p], kind: "blocked", reason: v.r || "Blocked" });
+        closeModal(); toast("Pitch " + v.p + " blocked · " + dday(v.d) + " " + hm(v.f) + "–" + hm(v.t)); render();
+      };
+    });
+  }
+
+  function pageMatchmaking() {
+    var chips = '<button class="dchip dchip--all" data-day="all" aria-pressed="' + (state.poolDay === "all") + '">All</button>';
+    for (var i = 0; i < 7; i++) { var d = addDays(today, i), ds = ymd(d); chips += '<button class="dchip" data-day="' + ds + '" aria-pressed="' + (state.poolDay === ds) + '"><small>' + (i === 0 ? "Today" : d.toLocaleDateString("en-GB", { weekday: "short" })) + "</small><b>" + d.getDate() + "</b></button>"; }
+    var list = pool.filter(function (p) { return state.poolDay === "all" || p.date === state.poolDay; }).sort(function (a, b) { return (a.date + a.from).localeCompare(b.date + b.from); });
+    function group(fmt) {
+      var g = list.filter(function (p) { return p.format === fmt; });
+      return '<div class="card pool"><div class="pool__h">' + fmt + " <small>" + g.length + " waiting</small></div>" +
+        (g.length ? g.map(function (p) { return '<div class="entry"><div><b>' + esc(p.team) + "</b><small>" + dday(p.date) + " · " + hm(p.from) + "–" + hm(p.to) + " · " + p.source + (p.phone ? " · " + esc(p.phone) : "") + '</small></div><span class="pill pill--' + p.level + '">' + p.level + '</span><button class="x" data-rm="' + p.id + '">Remove</button></div>'; }).join("") : '<div class="empty">No ' + fmt + " teams waiting.</div>") + "</div>";
+    }
+    main.innerHTML = ph("Matchmaking", pool.length + " teams waiting for a match", '<button class="btn btn-soft" id="addpool">+ Add to Pool</button><button class="btn btn-green" id="fullm">+ Full Pitch Match</button>') +
+      '<div class="days">' + chips + "</div>" +
+      '<div class="info"><b>How the pool works</b>When you add a team to the pool, the system looks for another team at the same skill level, on the same day, with an overlapping time window. If it finds one, both teams are confirmed instantly and a free pitch is assigned. Otherwise the team waits until a suitable opponent joins.<br><br><em>Try it:</em> add an Intermediate 5v5 team for today between 19:00 and 22:00 — it will be matched with Kaimakli 5.</div>' +
+      group("5v5") + group("7v7");
+    main.querySelectorAll("[data-day]").forEach(function (b) { b.onclick = function () { state.poolDay = b.dataset.day; render(); }; });
+    main.querySelectorAll("[data-rm]").forEach(function (b) { b.onclick = function () { var p = pool.find(function (x) { return x.id === b.dataset.rm; }); pool.splice(pool.indexOf(p), 1); toast(esc(p.team) + " removed from the pool"); render(); }; });
+    main.querySelector("#addpool").onclick = poolModal;
+    main.querySelector("#fullm").onclick = fullMatchModal;
+  }
+
+  function findSlot(date, from, to, fmt) {
+    for (var s = from; s + 1 <= to; s += 0.5) {
+      if (fmt === "7v7") { var c = combos.find(function (c) { return c.active && free(date, s, s + 1, [c.a, c.b]); }); if (c) return { start: s, pitches: [c.a, c.b] }; }
+      else { var p = pitches.find(function (p) { return p.active && free(date, s, s + 1, [p.id]); }); if (p) return { start: s, pitches: [p.id] }; }
+    }
+    return null;
+  }
+
+  function poolModal() {
+    openModal(mh("Add to Pool", "The team waits here until an opponent at their level is found.") + '<div class="modal__b">' +
+      '<div class="f"><label>Team name</label><input class="in" id="pt" placeholder="e.g. Friday Five"></div>' +
+      '<div class="two"><div class="f"><label>Phone</label><input class="in" id="pph" placeholder="+357 …"></div><div class="f"><label>Date</label><input class="in" type="date" id="pd" value="' + TODAY + '" min="' + TODAY + '"></div></div>' +
+      '<div class="two"><div class="f"><label>From</label><select class="in" id="pf">' + hourOptions(8, 22, 19) + '</select></div><div class="f"><label>To</label><select class="in" id="pto">' + hourOptions(9, 23, 22) + "</select></div></div>" +
+      '<div class="f"><span class="lbl">Level</span>' + opts("lvl", ["Casual", "Intermediate", "Competitive"], "Intermediate") + "</div>" +
+      '<div class="f"><span class="lbl">Format</span>' + opts("fmt", [["5v5", "5v5 · 1 pitch"], ["7v7", "7v7 · 2 pitches"]], "5v5") + "</div>" +
+      '<div class="f"><span class="lbl">Match with</span>' + opts("any", [["same", "Same level only"], ["any", "Any level"]], "same") + "</div>" +
+      '</div><div class="modal__f"><button class="btn btn-line" data-close>Cancel</button><button class="btn btn-green" id="pgo">Add to Pool</button></div>', function (m) {
+      bindOpts(m);
+      m.querySelector("#pgo").onclick = function () {
+        var e = { id: "p" + (poolSeq++), team: m.querySelector("#pt").value.trim() || "Walk-in team", phone: m.querySelector("#pph").value.trim(), date: m.querySelector("#pd").value, from: +m.querySelector("#pf").value, to: +m.querySelector("#pto").value, level: optVal(m, "lvl"), format: optVal(m, "fmt"), anyLevel: optVal(m, "any") === "any", source: "Walk-in" };
+        if (!e.date || e.to - e.from < 1) { toast("The time window needs to be at least an hour"); return; }
+        LEVEL[e.team] = e.level;
+        var cands = pool.filter(function (p) { return p.date === e.date && p.format === e.format && (p.level === e.level || e.anyLevel) && Math.min(p.to, e.to) - Math.max(p.from, e.from) >= 1; });
+        for (var i = 0; i < cands.length; i++) {
+          var p = cands[i], slot = findSlot(e.date, Math.max(p.from, e.from), Math.min(p.to, e.to), e.format);
+          if (slot) {
+            pool.splice(pool.indexOf(p), 1);
+            add({ date: e.date, start: slot.start, end: slot.start + 1, pitches: slot.pitches, kind: "match", home: p.team, away: e.team, format: e.format, amount: priceOf(slot.pitches) });
+            closeModal();
+            toast("<b>Match found.</b> " + esc(p.team) + " vs " + esc(e.team) + " · " + dday(e.date) + " " + hm(slot.start) + " · pitch " + pname(slot.pitches) + ". Both teams notified.");
+            state.poolDay = "all"; render(); return;
+          }
+        }
+        pool.push(e); closeModal(); toast("Added to the pool — no opponent yet. " + esc(e.team) + " will be matched automatically."); render();
+      };
+    });
+  }
+
+  function fullMatchModal() {
+    openModal(mh("Full Pitch Match", "Two teams already together — a pitch is assigned automatically.") + '<div class="modal__b">' +
+      '<div class="two"><div class="f"><label>Date</label><input class="in" type="date" id="fd" value="' + TODAY + '" min="' + TODAY + '"></div><div class="f"><label>Start</label><select class="in" id="fs">' + hourOptions(8, 22, 20) + "</select></div></div>" +
+      '<div class="f"><span class="lbl">Duration</span>' + opts("dur", [["1", "1h"], ["1.5", "1.5h"], ["2", "2h"]], "1") + "</div>" +
+      '<div class="f"><span class="lbl">Format</span>' + opts("fmt", ["5v5", "7v7"], "5v5") + "</div>" +
+      '<div class="two"><div class="f"><label>Booking name</label><input class="in" id="fn" placeholder="e.g. Office league"></div><div class="f"><label>Phone</label><input class="in" id="fp" placeholder="+357 …"></div></div>' +
+      '</div><div class="modal__f"><button class="btn btn-line" data-close>Cancel</button><button class="btn btn-green" id="fgo">Create Match</button></div>', function (m) {
+      bindOpts(m);
+      m.querySelector("#fgo").onclick = function () {
+        var date = m.querySelector("#fd").value, s = +m.querySelector("#fs").value, dur = +optVal(m, "dur"), fmt = optVal(m, "fmt");
+        if (s + dur > 23) { toast("That runs past closing time (23:00)"); return; }
+        var slot = null;
+        if (fmt === "7v7") { var c = combos.find(function (c) { return c.active && free(date, s, s + dur, [c.a, c.b]); }); if (c) slot = [c.a, c.b]; }
+        else { var p = pitches.find(function (p) { return p.active && free(date, s, s + dur, [p.id]); }); if (p) slot = [p.id]; }
+        if (!slot) { toast("No " + fmt + " pitch is free at " + hm(s) + " — try another time"); return; }
+        add({ date: date, start: s, end: s + dur, pitches: slot, kind: "manual", home: m.querySelector("#fn").value.trim() || "Walk-in match", phone: m.querySelector("#fp").value.trim(), format: fmt, amount: priceOf(slot) * dur, paid: false, method: "Cash" });
+        closeModal(); toast("<b>Match created</b> · " + dday(date) + " " + hm(s) + " · pitch " + pname(slot)); render();
+      };
+    });
+  }
+
+  function pageBookings() {
+    var list = bookings.filter(function (b) { return b.kind !== "blocked"; })
+      .filter(function (b) { return state.src === "all" || (state.src === "app" ? b.kind === "match" : b.kind !== "match"); })
+      .filter(function (b) { return state.st === "all" || status(b) === state.st || (state.st === "completed" && status(b) === "awaiting"); })
+      .sort(function (a, b) { return (b.date + hm(b.start)).localeCompare(a.date + hm(a.start)); });
+    var per = 10, pages = Math.max(1, Math.ceil(list.length / per)); if (state.bpage >= pages) state.bpage = pages - 1;
+    var slice = list.slice(state.bpage * per, state.bpage * per + per);
+    function seg(key, vals) { return '<div class="seg' + (key === "st" ? " seg--dark" : "") + '">' + vals.map(function (v) { return '<button data-' + key + '="' + v[0] + '" aria-pressed="' + (state[key] === v[0]) + '">' + v[1] + "</button>"; }).join("") + "</div>"; }
+    main.innerHTML = ph("Bookings", "Matchmaking + manual bookings at your venue", '<button class="btn btn-green" id="addb">+ Add Booking</button>') +
+      '<div class="filters">' + seg("src", [["all", "All"], ["app", "Matchmaking"], ["manual", "Manual"]]) + seg("st", [["all", "All"], ["confirmed", "Confirmed"], ["pending", "Pending"], ["completed", "Completed"], ["cancelled", "Cancelled"]]) + "</div>" +
+      '<div class="card"><div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Time</th><th>Team / match</th><th>Pitch</th><th>Type</th><th>Source</th><th>Status</th></tr></thead><tbody>' +
+      (slice.length ? slice.map(function (b) {
+        var s = status(b);
+        return '<tr data-b="' + b.id + '" style="cursor:pointer"><td>' + dshort(b.date) + "</td><td>" + hm(b.start) + "–<br>" + hm(b.end) + "</td><td><b>" + title(b) + "</b>" + (b.kind !== "match" && b.amount ? "<small>" + eur(b.amount) + " · " + (b.paid ? "Paid" : "Unpaid") + "</small>" : "") + "</td><td>" + pname(b.pitches) + "</td><td>" + typeLabel(b) + '</td><td><span class="pill pill--' + (b.kind === "match" ? "app" : "manual") + '">' + (b.kind === "match" ? "App" : "Manual") + '</span></td><td><span class="pill pill--' + s + '">' + ST_LABEL[s] + "</span></td></tr>";
+      }).join("") : '<tr><td colspan="7" class="empty">No bookings match these filters.</td></tr>') +
+      '</tbody></table></div><div class="pager"><button id="pp"' + (state.bpage === 0 ? " disabled" : "") + '>&larr; Prev</button><span>' + list.length + " bookings · page " + (state.bpage + 1) + " of " + pages + '</span><button id="pn"' + (state.bpage >= pages - 1 ? " disabled" : "") + ">Next &rarr;</button></div></div>";
+    main.querySelectorAll("[data-src]").forEach(function (b) { b.onclick = function () { state.src = b.dataset.src; state.bpage = 0; render(); }; });
+    main.querySelectorAll("[data-st]").forEach(function (b) { b.onclick = function () { state.st = b.dataset.st; state.bpage = 0; render(); }; });
+    main.querySelector("#pp").onclick = function () { state.bpage--; render(); };
+    main.querySelector("#pn").onclick = function () { state.bpage++; render(); };
+    main.querySelectorAll("tr[data-b]").forEach(function (r) { r.onclick = function () { bookingModal(r.dataset.b); }; });
+    main.querySelector("#addb").onclick = addBookingModal;
+  }
+
+  function addBookingModal() {
+    openModal(mh("Add Booking", "A walk-in or phone booking.") + '<div class="modal__b">' +
+      '<div class="f"><label>Team / customer</label><input class="in" id="an" placeholder="e.g. Andreas K."></div>' +
+      '<div class="two"><div class="f"><label>Pitch</label><select class="in" id="ap">' + pitches.map(function (p) { return '<option value="' + p.id + '">Pitch ' + p.name + "</option>"; }).join("") + '</select></div><div class="f"><label>Date</label><input class="in" type="date" id="ad" value="' + TODAY + '"></div></div>' +
+      '<div class="two"><div class="f"><label>Start</label><select class="in" id="as">' + hourOptions(8, 22, 18) + '</select></div><div class="f"><label>End</label><select class="in" id="ae">' + hourOptions(9, 23, 19) + "</select></div></div>" +
+      '<div class="two"><div class="f"><label>Amount (€)</label><input class="in" type="number" id="aa" value="70" min="0"></div><div class="f"><label>Payment</label><select class="in" id="am"><option>Cash</option><option>Card</option><option>Bank transfer</option><option>Other</option></select></div></div>' +
+      '</div><div class="modal__f"><button class="btn btn-line" data-close>Cancel</button><button class="btn btn-green" id="ago">Save</button></div>', function (m) {
+      m.querySelector("#ago").onclick = function () {
+        var p = +m.querySelector("#ap").value, d = m.querySelector("#ad").value, s = +m.querySelector("#as").value, e = +m.querySelector("#ae").value;
+        if (e <= s) { toast("End time must be after the start"); return; }
+        var c = conflicts(d, s, e, [p]);
+        if (c.length) { toast("Pitch " + p + " is taken then (" + hm(c[0].start) + "–" + hm(c[0].end) + ")"); return; }
+        add({ date: d, start: s, end: e, pitches: [p], kind: "manual", home: m.querySelector("#an").value.trim() || "Walk-in", format: "5v5", amount: +m.querySelector("#aa").value || 0, paid: false, method: m.querySelector("#am").value });
+        closeModal(); toast("<b>Booking saved</b> · pitch " + p + " · " + dday(d) + " " + hm(s)); render();
+      };
+    });
+  }
+
+  function pageCustomers() {
+    var cutoff = ymd(addDays(today, -365)), app = {}, walk = {};
+    bookings.forEach(function (b) {
+      if (b.cancelled || b.date < cutoff) return;
+      if (b.kind === "match") [b.home, b.away].forEach(function (t) { var r = app[t] || (app[t] = { n: 0, last: "" }); r.n++; if (b.date <= TODAY && b.date > r.last) r.last = b.date; });
+      else if (b.kind === "manual" || b.kind === "event") { var r = walk[b.home] || (walk[b.home] = { n: 0, last: "", phone: b.phone }); r.n++; if (b.date <= TODAY && b.date > r.last) r.last = b.date; if (b.phone) r.phone = b.phone; }
+    });
+    var appRows = Object.keys(app).sort(function (a, b) { return app[b].n - app[a].n; }), walkRows = Object.keys(walk).sort(function (a, b) { return walk[b].n - walk[a].n; });
+    var isApp = state.custTab === "app";
+    main.innerHTML = ph("Customers", "App teams and walk-in contacts") +
+      '<div class="filters"><div class="seg"><button data-ct="app" aria-pressed="' + isApp + '">App Teams (' + appRows.length + ')</button><button data-ct="walk" aria-pressed="' + !isApp + '">Walk-ins (' + walkRows.length + ")</button></div></div>" +
+      '<div class="card wide"><div class="tbl-wrap"><table><thead><tr><th>' + (isApp ? "Team" : "Contact") + "</th>" + (isApp ? "<th>Level</th>" : "<th>Phone</th>") + "<th>Matches</th><th>Last played</th></tr></thead><tbody>" +
+      (isApp ? appRows.map(function (t) { return "<tr><td><b>" + esc(t) + '</b></td><td><span class="pill pill--' + LEVEL[t] + '">' + LEVEL[t] + "</span></td><td>" + app[t].n + "</td><td>" + (app[t].last ? dshort(app[t].last) : "—") + "</td></tr>"; })
+        : walkRows.map(function (t) { return "<tr><td><b>" + esc(t) + "</b></td><td>" + esc(walk[t].phone || "—") + "</td><td>" + walk[t].n + "</td><td>" + (walk[t].last ? dshort(walk[t].last) : "—") + "</td></tr>"; })).join("") +
+      "</tbody></table></div></div>";
+    main.querySelectorAll("[data-ct]").forEach(function (b) { b.onclick = function () { state.custTab = b.dataset.ct; render(); }; });
+  }
+
+  function pagePitches() {
+    main.innerHTML = ph("Pitches", pitches.length + " pitches configured") +
+      '<div class="card addp narrow"><label for="np">Add a pitch</label><div><input class="in" id="np" placeholder="e.g. 6, Field A…"><button class="btn btn-green" id="npb">Add</button></div></div>' +
+      '<div class="card narrow"><div class="tbl-wrap"><table><thead><tr><th>Name</th><th>Status</th><th>€/hr</th><th></th></tr></thead><tbody>' +
+      pitches.map(function (p) { return '<tr><td><span class="dotname' + (p.active ? "" : " dotname--off") + '">' + esc(p.name) + '</span></td><td><span class="pill pill--' + (p.active ? "active" : "inactive") + '">' + (p.active ? "Active" : "Inactive") + '</span></td><td><button class="price" data-price="' + p.id + '" title="Click to edit">' + eur(p.price) + '</button></td><td style="text-align:right"><button class="x" data-tog="' + p.id + '">' + (p.active ? "Deactivate" : "Activate") + "</button></td></tr>"; }).join("") +
+      "</tbody></table></div></div>" +
+      '<div class="sub narrow"><div><h2>7v7 Combinations</h2><p>Combine two pitches for 7-a-side matches</p></div></div>' +
+      '<div class="card narrow"><div class="tbl-wrap"><table><thead><tr><th>Combination</th><th>Pitches</th><th>€/hr</th></tr></thead><tbody>' +
+      combos.map(function (c) { return '<tr><td><span class="dotname dotname--blue">' + esc(c.name) + "</span></td><td>" + c.a + " + " + c.b + "</td><td>" + eur(c.price) + "</td></tr>"; }).join("") + "</tbody></table></div></div>";
+    function addPitch() { var v = main.querySelector("#np").value.trim(); if (!v) return; var id = Math.max.apply(null, pitches.map(function (p) { return p.id; })) + 1; pitches.push({ id: id, name: v, price: 70, active: true }); toast("Pitch " + esc(v) + " added"); render(); }
+    main.querySelector("#npb").onclick = addPitch;
+    main.querySelector("#np").onkeydown = function (e) { if (e.key === "Enter") addPitch(); };
+    main.querySelectorAll("[data-tog]").forEach(function (b) { b.onclick = function () { var p = pitches.find(function (x) { return x.id === +b.dataset.tog; }); p.active = !p.active; render(); }; });
+    main.querySelectorAll("[data-price]").forEach(function (b) {
+      b.onclick = function () {
+        var p = pitches.find(function (x) { return x.id === +b.dataset.price; });
+        var i = document.createElement("input"); i.className = "in price-in"; i.type = "number"; i.value = p.price; b.replaceWith(i); i.focus(); i.select();
+        function done(save) { if (save && +i.value > 0) { p.price = +i.value; toast("Pitch " + esc(p.name) + " now " + eur(p.price) + "/hr"); } render(); }
+        i.onkeydown = function (e) { if (e.key === "Enter") done(true); if (e.key === "Escape") done(false); };
+        i.onblur = function () { done(true); };
+      };
+    });
+  }
+
+  function pageRevenue() {
+    var from, to, label;
+    if (state.period === "today") { from = to = TODAY; label = today.toLocaleDateString("en-GB", { day: "numeric", month: "short" }); }
+    else if (state.period === "week") { from = ymd(monday); to = ymd(addDays(monday, 6)); label = dshort(from).replace(/ \d{4}$/, "") + " – " + dshort(to).replace(/ \d{4}$/, ""); }
+    else { from = ymd(monthStart); to = ymd(monthEnd); label = "1 – " + monthEnd.getDate() + " " + monthEnd.toLocaleDateString("en-GB", { month: "short" }); }
+    var inP = bookings.filter(function (b) { return b.date >= from && b.date <= to; });
+    var manual = inP.filter(function (b) { return !b.cancelled && (b.kind === "manual" || b.kind === "event"); });
+    var app = inP.filter(function (b) { return !b.cancelled && b.kind === "match"; });
+    var forf = inP.filter(function (b) { return b.cancelled && b.forfeit; });
+    var sum = function (a, k) { return a.reduce(function (s, b) { return s + (b[k] || 0); }, 0); };
+    var M = sum(manual, "amount"), A = sum(app, "amount"), F = sum(forf, "forfeit"), T = M + A + F;
+
+    // chart series
+    var pts = [];
+    if (state.period === "today") { for (var h = 8; h <= 23; h++) pts.push({ x: hm(h), v: inP.filter(function (b) { return !b.cancelled && Math.floor(b.start) === h; }).reduce(function (s, b) { return s + (b.amount || 0); }, 0) }); }
+    else { for (var d = parse(from); ymd(d) <= to; d = addDays(d, 1)) { var ds = ymd(d); pts.push({ x: String(d.getDate()), v: inP.filter(function (b) { return b.date === ds; }).reduce(function (s, b) { return s + (b.cancelled ? (b.forfeit || 0) : (b.amount || 0)); }, 0) }); } }
+    var W = 840, H = 240, L = 52, R = 16, Tp = 16, B = 30, max = Math.max(50, Math.max.apply(null, pts.map(function (p) { return p.v; })));
+    max = Math.ceil(max / 100) * 100;
+    var xs = function (i) { return L + (pts.length === 1 ? 0 : i * (W - L - R) / (pts.length - 1)); }, ys = function (v) { return Tp + (H - Tp - B) * (1 - v / max); };
+    var path = pts.map(function (p, i) { return (i ? "L" : "M") + xs(i).toFixed(1) + " " + ys(p.v).toFixed(1); }).join(" ");
+    var grid = "", ticks = "";
+    for (var g = 0; g <= 4; g++) { var v = max * g / 4, y = ys(v); grid += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y + '" y2="' + y + '" stroke="#f1f5f9"/><text x="' + (L - 8) + '" y="' + (y + 4) + '" text-anchor="end" font-size="11" fill="#cbd5e1">€' + Math.round(v) + "</text>"; }
+    var step = Math.max(1, Math.ceil(pts.length / 8));
+    pts.forEach(function (p, i) { if (i % step === 0 || i === pts.length - 1) ticks += '<text x="' + xs(i) + '" y="' + (H - 8) + '" text-anchor="middle" font-size="11" fill="#94a3b8">' + p.x + "</text>"; });
+    var svg = '<svg viewBox="0 0 ' + W + " " + H + '" preserveAspectRatio="none" id="rchart"><defs><linearGradient id="gf" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#16a34a" stop-opacity=".14"/><stop offset="1" stop-color="#16a34a" stop-opacity="0"/></linearGradient></defs>' + grid +
+      '<path d="' + path + " L" + xs(pts.length - 1) + " " + ys(0) + " L" + xs(0) + " " + ys(0) + ' Z" fill="url(#gf)"/><path d="' + path + '" fill="none" stroke="#16a34a" stroke-width="2" stroke-linejoin="round"/>' + ticks +
+      '<line id="hl" y1="' + Tp + '" y2="' + (H - B) + '" stroke="#cbd5e1" stroke-dasharray="3 3" visibility="hidden"/><circle id="hc" r="4" fill="#16a34a" stroke="#fff" stroke-width="2" visibility="hidden"/><text id="ht" class="tip" visibility="hidden"></text></svg>';
+
+    var tx = manual.slice().sort(function (a, b) { return (b.date + hm(b.start)).localeCompare(a.date + hm(a.start)); }).slice(0, 8);
+    main.innerHTML = ph("Revenue", label, '<button class="btn btn-line" id="exp">&darr; Export</button><div class="seg">' + [["today", "Today"], ["week", "This Week"], ["month", "This Month"]].map(function (p) { return '<button data-per="' + p[0] + '" aria-pressed="' + (state.period === p[0]) + '">' + p[1] + "</button>"; }).join("") + "</div>") +
+      '<div class="total"><small>Total — ' + label + "</small><b>" + eur(T) + "</b><span>Manual " + eur(M) + " &nbsp;·&nbsp; App " + eur(A) + " &nbsp;·&nbsp; Forfeitures " + eur(F) + "</span></div>" +
+      '<div class="rcards"><div class="card rcard"><b>Manual Bookings</b><small>Cash · Card · Expected</small><strong>' + eur(M) + "</strong><small>" + manual.length + ' transactions</small></div><div class="card rcard"><b>App Bookings</b><small>Stripe · in-app payments</small><strong>' + eur(A) + "</strong><small>" + app.length + ' transactions</small></div><div class="card rcard"><b>Forfeitures</b><small>Late-cancel penalties kept</small><strong>' + eur(F) + "</strong><small>" + forf.length + " transactions</small></div></div>" +
+      '<div class="card chart"><div class="card__head"><div><b>Revenue over time</b><small>' + eur(T) + ' · hover to inspect</small></div></div><div style="padding:8px 12px 12px">' + svg + "</div></div>" +
+      '<div class="card wide"><div class="card__head"><b>Manual Transactions</b></div><div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Team</th><th>Pitch</th><th>Status</th><th style="text-align:right">Amount</th></tr></thead><tbody>' +
+      (tx.length ? tx.map(function (b) { return "<tr><td>" + dshort(b.date).replace(/ \d{4}$/, "") + "</td><td><b>" + esc(b.home) + "</b><small>" + hm(b.start) + "–" + hm(b.end) + " · " + (b.method || "") + "</small></td><td>" + pname(b.pitches) + '</td><td><span class="pill pill--' + (b.paid ? "paid" : "expected") + '">' + (b.paid ? "Paid" : "Expected") + '</span></td><td style="text-align:right"><b>' + eur(b.amount) + "</b></td></tr>"; }).join("") : '<tr><td colspan="5" class="empty">No manual transactions in this period.</td></tr>') +
+      "</tbody></table></div></div>";
+    main.querySelectorAll("[data-per]").forEach(function (b) { b.onclick = function () { state.period = b.dataset.per; render(); }; });
+    main.querySelector("#exp").onclick = function () {
+      var rows = [["date", "start", "end", "team", "pitch", "source", "status", "amount_eur"]].concat(inP.filter(function (b) { return b.kind !== "blocked" && b.kind !== "pending"; }).map(function (b) { return [b.date, hm(b.start), hm(b.end), b.kind === "match" ? b.home + " vs " + b.away : b.home, pname(b.pitches), b.kind === "match" ? "App" : "Manual", status(b), (b.cancelled ? b.forfeit || 0 : b.amount || 0).toFixed(2)]; }));
+      var csv = rows.map(function (r) { return r.map(function (c) { return /[",]/.test(c) ? '"' + String(c).replace(/"/g, '""') + '"' : c; }).join(","); }).join("\n");
+      var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); a.download = "futsalaki-revenue-" + from + ".csv"; a.click();
+      toast("Exported " + (rows.length - 1) + " rows to CSV");
+    };
+    var chart = main.querySelector("#rchart"), hl = chart.querySelector("#hl"), hc = chart.querySelector("#hc"), ht = chart.querySelector("#ht");
+    chart.addEventListener("mousemove", function (e) {
+      var r = chart.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * W;
+      var i = Math.max(0, Math.min(pts.length - 1, Math.round((x - L) / ((W - L - R) / Math.max(1, pts.length - 1)))));
+      var px = xs(i), py = ys(pts[i].v);
+      hl.setAttribute("x1", px); hl.setAttribute("x2", px); hc.setAttribute("cx", px); hc.setAttribute("cy", py);
+      ht.textContent = (state.period === "today" ? pts[i].x : pts[i].x + " " + monthEnd.toLocaleDateString("en-GB", { month: "short" })) + " · " + eur(pts[i].v);
+      ht.setAttribute("x", Math.min(W - R - 110, px + 8)); ht.setAttribute("y", Math.max(Tp + 12, py - 10));
+      [hl, hc, ht].forEach(function (n) { n.setAttribute("visibility", "visible"); });
+    });
+    chart.addEventListener("mouseleave", function () { [hl, hc, ht].forEach(function (n) { n.setAttribute("visibility", "hidden"); }); });
+  }
+
+  function pageSettings() {
+    var DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    main.innerHTML = ph("Settings", "Opening hours, pricing, payments and venue details") +
+      '<div class="card set"><div class="card__head"><div><b>App Availability</b><small>Controls whether your venue appears in the mobile app</small></div></div>' +
+      '<div class="set__row"><button class="tog" id="av" aria-pressed="' + settings.available + '" aria-label="Available to players"></button><div class="grow"><b>' + (settings.available ? "Available to players" : "Out of service") + "</b><small>" + (settings.available ? "Your venue is visible and bookable in the app" : "Players see your venue as out of service") + "</small></div></div></div>" +
+      '<div class="card set"><div class="card__head"><div><b>Opening Hours</b><small>Controls when teams can book through the app</small></div></div>' +
+      settings.hours.map(function (h, i) { return '<div class="set__row"><button class="tog" data-day="' + i + '" aria-pressed="' + h.open + '" aria-label="' + DAYS[i] + ' open"></button><div class="grow"><b>' + DAYS[i] + '</b></div><div class="hrs">' + (h.open ? '<select data-from="' + i + '">' + hourOptions(6, 14, h.from, 1) + '</select> to <select data-to="' + i + '">' + hourOptions(15, 24, h.to, 1) + "</select>" : "Closed") + "</div></div>"; }).join("") +
+      '<div class="set__foot"><button class="btn btn-green" id="savehrs">Save hours</button></div></div>' +
+      '<div class="card set"><div class="card__head"><div><b>Payments</b><small>Players pay in the app; payouts go to your bank through Stripe Connect</small></div></div>' +
+      '<div class="set__row"><div class="stripe grow"><i>S</i><div><b>Connected</b><small>Payouts every 2 days to IBAN •••• 4471</small></div></div><button class="btn btn-line" id="payouts">View payouts &amp; settings</button></div></div>' +
+      '<div class="card set"><div class="card__head"><div><b>Venue Profile</b><small>Contact support to change these</small></div></div><div class="set__row"><dl class="kv" style="margin:0"><dt>Name</dt><dd>Demo Arena</dd><dt>City</dt><dd>Nicosia</dd><dt>Address</dt><dd>—</dd></dl></div></div>';
+    main.querySelector("#av").onclick = function () { settings.available = !settings.available; render(); };
+    main.querySelectorAll("[data-day]").forEach(function (b) { b.onclick = function () { var h = settings.hours[+b.dataset.day]; h.open = !h.open; render(); }; });
+    main.querySelectorAll("[data-from]").forEach(function (s) { s.onchange = function () { settings.hours[+s.dataset.from].from = +s.value; }; });
+    main.querySelectorAll("[data-to]").forEach(function (s) { s.onchange = function () { settings.hours[+s.dataset.to].to = +s.value; }; });
+    main.querySelector("#savehrs").onclick = function () { toast("<b>Opening hours saved.</b> The app will only offer these times."); };
+    main.querySelector("#payouts").onclick = function () { toast("In the real dashboard this opens the venue's Stripe Express dashboard."); };
+  }
+
+  function pageSupport() {
+    main.innerHTML = ph("Support", "Get help from the Futsalaki team") +
+      '<div class="card set" style="max-width:576px;padding:24px"><b style="color:var(--ink);font-size:15px">Email us</b><p style="color:var(--muted);margin:4px 0 16px">Have a question or need help? We typically reply within one business day.</p>' +
+      '<div style="display:flex;gap:8px"><input class="in" value="info@futsalaki.com" readonly><button class="btn btn-line" id="cp">Copy</button></div></div>';
+    main.querySelector("#cp").onclick = function () { try { navigator.clipboard.writeText("info@futsalaki.com"); } catch (e) {} toast("Copied"); };
+  }
+
+  var PAGES = { overview: pageOverview, calendar: pageCalendar, matchmaking: pageMatchmaking, bookings: pageBookings, pitches: pagePitches, customers: pageCustomers, revenue: pageRevenue, settings: pageSettings, support: pageSupport };
+  function render() { (PAGES[state.page] || pageOverview)(); }
+
+  var start = (location.hash || "").replace("#", "");
+  go(PAGES[start] ? start : "overview");
+})();
+</script>
+</body>
+</html>

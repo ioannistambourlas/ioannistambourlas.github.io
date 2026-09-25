@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CV — Ioannis Tambourlas</title>
+<meta name="description" content="Curriculum vitae of Ioannis Tambourlas: software developer, Computer Science student at KTH, badminton player for Cyprus.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #17181b; --ink-2: #45474d; --ink-3: #85878c; --rule: #dedbd2; --copper: #a4502a; --court: #2d5a47;
+  --sans: "Schibsted Grotesk", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: #e9e7e1; color: var(--ink); font: 400 9.3pt/1.45 var(--sans); -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+
+.bar { max-width: 210mm; margin: 24px auto 12px; padding: 0 4px; display: flex; justify-content: space-between; align-items: center; font: 500 14px var(--sans); }
+.bar a { color: var(--ink-2); }
+.bar a:hover { color: var(--ink); }
+.bar .actions { display: flex; gap: 18px; }
+.bar .actions a, .bar button { border: 0; background: none; font: inherit; color: var(--ink); cursor: pointer; padding: 0; border-bottom: 1px solid var(--copper); }
+
+.page { width: 210mm; min-height: 297mm; margin: 0 auto 40px; background: #fff; padding: 13mm 15mm 11mm; box-shadow: 0 20px 50px -30px rgb(23 24 27 / .45); }
+
+header { display: flex; justify-content: space-between; align-items: flex-end; gap: 12mm; padding-bottom: 5mm; border-bottom: 1.5px solid var(--ink); }
+h1 { font-size: 22pt; font-weight: 700; letter-spacing: -0.025em; line-height: 1; margin: 0 0 2.5mm; }
+.title { font-size: 11pt; color: var(--ink-2); margin: 0; }
+.title b { color: var(--copper); font-weight: 500; }
+.contact { text-align: right; font-size: 8pt; color: var(--ink-2); line-height: 1.55; margin: 0; white-space: nowrap; }
+
+section { display: grid; grid-template-columns: 24mm 1fr; gap: 0 4mm; padding: 3.4mm 0 .6mm; border-bottom: 1px solid var(--rule); }
+section:last-of-type { border-bottom: 0; }
+h2 { font: 500 7.8pt var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); margin: 0.6mm 0 0; }
+.sec--court h2 { color: var(--court); }
+.body > p { margin: 0 0 2.6mm; color: var(--ink-2); }
+
+.item { display: grid; grid-template-columns: 1fr auto; column-gap: 4mm; margin-bottom: 2.6mm; }
+.item h3 { font-size: 9.4pt; font-weight: 600; margin: 0; letter-spacing: -0.005em; }
+.item h3 span { font-weight: 400; color: var(--ink-2); }
+.when { font: 400 8pt var(--mono); color: var(--ink-3); white-space: nowrap; padding-top: .6mm; }
+.item ul { grid-column: 1 / -1; margin: 1mm 0 0; padding: 0; list-style: none; }
+.item li { position: relative; padding-left: 3.4mm; color: var(--ink-2); margin-bottom: .6mm; }
+.item li::before { content: ""; position: absolute; left: 0; top: .72em; width: 1.8mm; height: 1px; background: var(--ink-3); }
+.item .note { grid-column: 1 / -1; margin: .8mm 0 0; color: var(--ink-2); }
+.item .tech { grid-column: 1 / -1; margin: .8mm 0 0; font: 400 7.8pt var(--mono); color: var(--ink-3); }
+
+table { width: 100%; border-collapse: collapse; margin-bottom: 2.4mm; }
+td { padding: .9mm 0; vertical-align: top; color: var(--ink-2); }
+td:first-child { font: 400 8pt var(--mono); color: var(--ink-3); width: 11mm; padding-top: 1.2mm; }
+td:last-child { text-align: right; color: var(--court); font-weight: 600; white-space: nowrap; padding-left: 4mm; }
+
+dl { display: grid; grid-template-columns: 22mm 1fr; gap: .9mm 4mm; margin: 0 0 2.6mm; }
+dt { font: 400 8pt var(--mono); color: var(--ink-3); padding-top: .4mm; }
+dd { margin: 0; color: var(--ink-2); }
+
+footer { margin-top: 3mm; font: 400 7.6pt var(--mono); color: var(--ink-3); display: flex; justify-content: space-between; }
+
+@media screen and (max-width: 860px) {
+  body { background: #fff; }
+  .bar { margin: 16px; }
+  .page { width: auto; min-height: 0; padding: 20px 16px 32px; box-shadow: none; font-size: 15px; }
+  header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .contact { text-align: left; }
+  section { grid-template-columns: 1fr; gap: 8px; }
+  .item { grid-template-columns: 1fr; }
+  dl { grid-template-columns: 1fr; gap: 0; }
+  dd { margin-bottom: 8px; }
+  td:last-child { white-space: normal; }
+}
+
+@page { size: A4; margin: 0; }
+@media print {
+  body { background: #fff; }
+  .bar { display: none; }
+  .page { margin: 0; box-shadow: none; width: 210mm; height: 297mm; overflow: hidden; }
+}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <a href="./">&larr; Portfolio</a>
+  <div class="actions">
+    <a href="Ioannis-Tambourlas-CV.pdf" download>Download PDF</a>
+    <button type="button" onclick="window.print()">Print</button>
+  </div>
+</div>
+
+<article class="page">
+  <header>
+    <div>
+      <h1>Ioannis Tambourlas</h1>
+      <p class="title">Software developer <b>&amp;</b> badminton player</p>
+    </div>
+    <p class="contact">
+      <a href="mailto:ioannis.tambourlas@gmail.com">ioannis.tambourlas@gmail.com</a> &middot; Stockholm, Sweden<br>
+      <a href="https://github.com/ioannistambourlas">github.com/ioannistambourlas</a><br>
+      <a href="https://www.linkedin.com/in/ioannis-tambourlas-84197b3ab/">linkedin.com/in/ioannis-tambourlas-84197b3ab</a>
+    </p>
+  </header>
+
+  <section>
+    <h2>Profile</h2>
+    <div class="body">
+      <p>Second-year Computer Science student at KTH and co-founder of Futsalaki. I build full-stack products used by
+      real customers, with a focus on payments, data and reliability. 2025 Cypriot national badminton champion.
+      Looking for a software engineering internship for summer 2027.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Experience</h2>
+    <div class="body">
+      <div class="item">
+        <h3>Co-founder &amp; engineer <span>&middot; Futsalaki Ltd, Nicosia</span></h3>
+        <span class="when">2026 &ndash; present</span>
+        <ul>
+          <li>Matchmaking and pitch booking: an iOS/Android app for teams and a web dashboard for venues.</li>
+          <li>Payments on Stripe Connect: in-app payments, venue onboarding and payouts, automatic refunds and late-cancellation forfeits.</li>
+          <li>Led an engineering review: database performance, column privileges, rate limiting, monitoring and CI.</li>
+        </ul>
+        <p class="tech">TypeScript, Next.js, React Native (Expo), Supabase / Postgres, Stripe Connect, GitHub Actions</p>
+      </div>
+      <div class="item">
+        <h3>Co-developer <span>&middot; SSSB Market, Stockholm</span></h3>
+        <span class="when">2026</span>
+        <ul>
+          <li>Student marketplace: account-free posting with private manage links, on-device image compression, rate limiting, moderation, EN/SV.</li>
+        </ul>
+        <p class="tech">TypeScript, Next.js, React, Prisma, PostgreSQL (Supabase), Tailwind CSS</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Projects</h2>
+    <div class="body">
+      <div class="item">
+        <h3>CourtSense <span>&middot; badminton video analysis</span></h3>
+        <span class="when">in progress</span>
+        <p class="note">Player detection, pose estimation and automatic court calibration turn a phone video into footwork and court-coverage statistics; an LLM writes coaching feedback from them.</p>
+        <p class="tech">Python, FastAPI, OpenCV, YOLOv8, MediaPipe, SQLAlchemy, Claude API, pytest</p>
+      </div>
+      <div class="item">
+        <h3>Algorithms &amp; data structures in C <span>&middot; KTH</span></h3>
+        <span class="when">2026</span>
+        <p class="note">Core data structures from scratch with benchmarks; Dijkstra over the European rail network.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Education</h2>
+    <div class="body">
+      <div class="item">
+        <h3>BSc Computer Science and Engineering <span>&middot; KTH Royal Institute of Technology</span></h3>
+        <span class="when">2025 &ndash; 2028</span>
+        <p class="note">Programming (Java), Data Structures &amp; Algorithms (C), Digital Design, Embedded Electronics, Discrete Mathematics, Calculus, Linear Algebra</p>
+      </div>
+      <div class="item">
+        <h3>Upper Secondary School Diploma <span>&middot; Kykkos B&rsquo; Lyceum, Nicosia</span></h3>
+        <span class="when">2021 &ndash; 2024</span>
+        <p class="note">Final grade 19.20 / 20 &mdash; Excellent</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec--court">
+    <h2>Badminton</h2>
+    <div class="body">
+      <table>
+        <tr><td>2025</td><td>Cypriot National Championships &mdash; National Champion</td><td>1st</td></tr>
+        <tr><td>2023</td><td>Small States of Europe Team Championship, representing Cyprus</td><td>1st</td></tr>
+      </table>
+      <p>Cyprus national team since 2019. Elected athlete representative to the Cyprus Olympic Committee since 2023.
+      Two-month training residency at the Asia Badminton Academy, Kuala Lumpur.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Skills</h2>
+    <div class="body">
+      <dl>
+        <dt>Languages</dt><dd>TypeScript, JavaScript, Python, C, C++, Java, SQL</dd>
+        <dt>Frameworks</dt><dd>Next.js, React, React Native (Expo), FastAPI, Tailwind CSS</dd>
+        <dt>Data &amp; infra</dt><dd>PostgreSQL, Supabase, Prisma, SQLAlchemy, Stripe, Git, GitHub Actions</dd>
+        <dt>Spoken</dt><dd>Greek (native), English (C1 &mdash; IELTS Academic 7.5)</dd>
+        <dt>Certificates</dt><dd>IELTS Academic 7.5 (2023) &middot; Cambridge IGCSE English, A (2022) &middot; Pearson LCCI Level 3 Accounting, Merit (2022)</dd>
+      </dl>
+    </div>
+  </section>
+
+  <footer><span>References available on request</span><span>Updated September 2026</span></footer>
+</article>
+
+</body>
+</html>

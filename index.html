@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ioannis Tambourlas | Software developer</title>
+  <meta name="description" content="Ioannis Tambourlas. Computer Science student at KTH, co-founder of Futsalaki (on the App Store and Google Play) and 2025 Cypriot national badminton champion. Looking for a software engineering internship for summer 2027.">
+  <meta property="og:title" content="Ioannis Tambourlas | Software developer">
+  <meta property="og:description" content="Computer Science at KTH, co-founder of Futsalaki, looking for a summer 2027 internship.">
+  <meta property="og:type" content="profile">
+  <meta property="og:image" content="https://ioannistambourlas.com/assets/shots/futsalaki-calendar.jpg">
+  <meta property="og:url" content="https://ioannistambourlas.com/">
+  <link rel="canonical" href="https://ioannistambourlas.com/">
+  <meta name="theme-color" content="#fbfaf7">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<div class="loadbar" id="loadbar" aria-hidden="true"></div>
+
+<div class="topbar">
+  <div class="wrap topbar__inner">
+    <span>Stockholm, Sweden</span>
+    <span class="topbar__right">
+      <a href="mailto:ioannis.tambourlas@gmail.com">ioannis.tambourlas@gmail.com</a>
+      <a href="https://github.com/ioannistambourlas" rel="noopener">GitHub</a>
+      <a href="https://www.linkedin.com/in/ioannis-tambourlas-84197b3ab/" rel="noopener">LinkedIn</a>
+    </span>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="brand" href="./">
+      <span class="brand__name">Ioannis Tambourlas</span>
+      <span class="brand__tag">Software developer &amp; badminton player</span>
+    </a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu"><span></span>Menu</button>
+    <nav class="menu" id="menu" aria-label="Main">
+      <a href="#projects">Projects</a>
+      <a href="#experience">Experience</a>
+      <a href="#badminton">Badminton</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <a class="menu__cv" href="Ioannis-Tambourlas-CV.pdf" download>Download CV</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- Intro -->
+  <section class="intro wrap">
+    <div class="intro__text">
+      <p class="hello fx">Hello, and welcome.</p>
+      <h1 class="fx">I&rsquo;m Ioannis. I study computer science at KTH and build apps that people actually use.</h1>
+      <p class="intro__lead fx">I&rsquo;m from Nicosia, Cyprus, and in my second year at <a href="https://www.kth.se/en" rel="noopener">KTH Royal Institute of Technology</a> in Stockholm. I co-founded <a href="#futsalaki">Futsalaki</a>, a futsal booking app that is now on the App Store and Google Play. Outside of code I play badminton for Cyprus, and in 2025 I became national champion.</p>
+      <p class="intro__lead fx">Right now I&rsquo;m looking for a <strong>software engineering internship for summer 2027</strong>.</p>
+      <p class="intro__actions fx">
+        <a class="button" href="#projects">See my projects</a>
+        <a class="button button--outline" href="Ioannis-Tambourlas-CV.pdf" download>Download my CV (PDF)</a>
+      </p>
+    </div>
+
+    <aside class="intro__side fx">
+      <figure class="photo">
+        <img src="assets/portrait.jpg" alt="Portrait of Ioannis Tambourlas" width="267" height="325">
+        <figcaption>Ioannis Tambourlas</figcaption>
+      </figure>
+      <div class="widget">
+        <h2 class="widget__title">Currently</h2>
+        <ul class="now">
+          <li><b>Studying</b> BSc Computer Science, KTH (2025 to 2028)</li>
+          <li><b>Building</b> Futsalaki, live on iOS and Android</li>
+          <li><b>Training</b> with the Cyprus national badminton team</li>
+          <li><b>Open to</b> internships in Stockholm or remote. EU citizen, no visa needed.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <!-- Projects -->
+  <section class="block wrap" id="projects">
+    <header class="block__head">
+      <h2 class="block__title">Projects</h2>
+      <p>Things I&rsquo;ve built, most of them with a demo you can try in the browser.</p>
+    </header>
+
+    <div class="filters" role="group" aria-label="Filter projects">
+      <button type="button" class="is-on" data-filter="all" aria-pressed="true">All</button>
+      <button type="button" data-filter="mobile" aria-pressed="false">Mobile</button>
+      <button type="button" data-filter="web" aria-pressed="false">Web</button>
+      <button type="button" data-filter="ai" aria-pressed="false">Machine learning</button>
+    </div>
+
+    <div class="posts" id="posts">
+
+      <article class="post post--featured" id="futsalaki" data-cat="mobile web">
+        <a class="post__img post__img--fut" href="work/futsalaki/" aria-label="Futsalaki case study">
+          <img class="lazy" data-src="assets/shots/futsalaki-calendar.jpg" alt="Futsalaki venue dashboard with the weekly pitch calendar" width="2160" height="1350">
+          <img class="lazy post__phone" data-src="assets/shots/futsalaki-app-3.webp" alt="Futsalaki player app" width="600" height="1298">
+        </a>
+        <div class="post__body">
+          <p class="post__meta"><span class="cat">Mobile app</span><span class="cat">Web</span><time>2026 to now</time></p>
+          <h3 class="post__title"><a href="work/futsalaki/">Futsalaki</a></h3>
+          <p>A matchmaking and pitch booking app for futsal in Cyprus. Teams book a pitch or get matched with an opponent at their level, and venues run their whole week from a web dashboard. I co-founded it and work mostly on payments (Stripe Connect) and on making the backend safe to launch.</p>
+          <p class="post__stack">TypeScript, React Native, Expo, Next.js, Supabase, Postgres, Stripe</p>
+          <p class="post__links">
+            <a class="more" href="work/futsalaki/">Read the case study</a>
+            <a href="demos/futsalaki-app/">Try the app</a>
+            <a href="demos/futsalaki/">Try the venue dashboard</a>
+            <a href="https://apps.apple.com/us/app/futsalaki/id6781737625" rel="noopener">App Store</a>
+            <a href="https://play.google.com/store/apps/details?id=com.futsalaki.app" rel="noopener">Google Play</a>
+          </p>
+        </div>
+      </article>
+
+      <article class="post" id="sssb-market" data-cat="web">
+        <a class="post__img post__img--phones" href="work/sssb-market/" aria-label="SSSB Market case study">
+          <img class="lazy" data-src="assets/shots/market-board.jpg" alt="SSSB Market listings board" width="780" height="1560">
+          <img class="lazy" data-src="assets/shots/market-listing.jpg" alt="A single listing" width="780" height="1560">
+        </a>
+        <div class="post__body">
+          <p class="post__meta"><span class="cat">Web</span><time>2026</time></p>
+          <h3 class="post__title"><a href="work/sssb-market/">SSSB Market</a></h3>
+          <p>A second-hand furniture board for students living in SSSB housing. No accounts: you post in a minute, get a private link to edit your ad, and buyers message you on WhatsApp. Built with Antreas Patsiantos.</p>
+          <p class="post__stack">Next.js, React, Prisma, Supabase, Tailwind</p>
+          <p class="post__links">
+            <a class="more" href="work/sssb-market/">Read the case study</a>
+            <a href="demos/student-market/">Try the demo</a>
+          </p>
+        </div>
+      </article>
+
+      <article class="post" id="courtsense" data-cat="ai">
+        <div class="post__img post__img--court" aria-hidden="true">
+          <svg viewBox="0 0 320 200">
+            <g fill="none" stroke="#fff">
+              <rect x="20" y="16" width="280" height="168" stroke-width="2"/>
+              <line x1="160" y1="16" x2="160" y2="184" stroke-width="2" stroke-dasharray="3 4"/>
+              <line x1="112" y1="16" x2="112" y2="184" stroke-width="1.4"/><line x1="208" y1="16" x2="208" y2="184" stroke-width="1.4"/>
+              <line x1="20" y1="100" x2="112" y2="100" stroke-width="1.4"/><line x1="208" y1="100" x2="300" y2="100" stroke-width="1.4"/>
+              <line x1="20" y1="30" x2="300" y2="30" stroke-width="1.4"/><line x1="20" y1="170" x2="300" y2="170" stroke-width="1.4"/>
+            </g>
+            <circle cx="70" cy="70" r="30" fill="#ffd66b" opacity=".3"/><circle cx="84" cy="128" r="22" fill="#ffd66b" opacity=".22"/>
+            <polyline class="trace" points="60,120 72,84 92,70 80,58 66,96 88,132" fill="none" stroke="#ffd66b" stroke-width="2"/>
+            <circle cx="88" cy="132" r="5" fill="#ffd66b"/>
+            <rect x="228" y="54" width="34" height="62" fill="none" stroke="#9fd0ff" stroke-width="1.6"/>
+            <text x="228" y="48" fill="#9fd0ff" font-size="9" font-family="sans-serif">player 0.94</text>
+          </svg>
+        </div>
+        <div class="post__body">
+          <p class="post__meta"><span class="cat">Machine learning</span><time>In progress</time></p>
+          <h3 class="post__title">CourtSense</h3>
+          <p>A badminton coach that works from a phone video. It finds the players with YOLOv8, tracks their pose with MediaPipe, maps positions onto the court, and turns footwork and coverage stats into written feedback. Shuttle tracking is next.</p>
+          <p class="post__stack">Python, FastAPI, OpenCV, YOLOv8, MediaPipe, pytest</p>
+          <p class="post__note">Still in development, so there&rsquo;s no demo yet.</p>
+        </div>
+      </article>
+
+
+    </div>
+  </section>
+
+  <!-- Experience -->
+  <section class="block block--tint" id="experience">
+    <div class="wrap">
+      <header class="block__head">
+        <h2 class="block__title">Experience</h2>
+        <p>Where I&rsquo;ve worked and studied. The full version is in <a href="Ioannis-Tambourlas-CV.pdf" download>my CV</a>.</p>
+      </header>
+
+      <div class="cv">
+        <div class="cv__col">
+          <h3 class="cv__heading">Work</h3>
+          <div class="entry fx">
+            <p class="entry__when">2026 to now</p>
+            <h4>Co-founder and engineer, Futsalaki Ltd</h4>
+            <p class="entry__where">Nicosia, Cyprus</p>
+            <p>A two-sided booking product built by a small team. I work on payments with Stripe Connect, and before launch I led a review of the codebase: database performance, column privileges, rate limiting, error monitoring and a CI pipeline.</p>
+          </div>
+          <div class="entry fx">
+            <p class="entry__when">2026</p>
+            <h4>Co-developer, SSSB Market</h4>
+            <p class="entry__where">Stockholm</p>
+            <p>Full-stack Next.js marketplace for students in SSSB housing, with Postgres and Prisma, image uploads, English and Swedish, and a moderation panel.</p>
+          </div>
+          <div class="entry fx">
+            <p class="entry__when">2023 to now</p>
+            <h4>Athlete representative, Cyprus Olympic Committee</h4>
+            <p class="entry__where">Nicosia, Cyprus</p>
+            <p>Elected by the national badminton players to represent them on the committee.</p>
+          </div>
+        </div>
+
+        <div class="cv__col">
+          <h3 class="cv__heading">Education</h3>
+          <div class="entry fx">
+            <p class="entry__when">2025 to 2028</p>
+            <h4>BSc Computer Science and Engineering</h4>
+            <p class="entry__where">KTH Royal Institute of Technology, Stockholm</p>
+            <p>Courses so far include programming in Java, data structures and algorithms in C, digital design, embedded electronics, discrete mathematics, calculus and linear algebra.</p>
+          </div>
+          <div class="entry fx">
+            <p class="entry__when">2021 to 2024</p>
+            <h4>Upper secondary school diploma</h4>
+            <p class="entry__where">Kykkos B&rsquo; Lyceum, Nicosia</p>
+            <p>Graduated with 19.20 out of 20 while competing internationally.</p>
+          </div>
+          <div class="entry fx">
+            <p class="entry__when">Languages</p>
+            <h4>Greek (native), English (C1)</h4>
+            <p>IELTS Academic 7.5, Cambridge IGCSE English (A), Pearson LCCI Level 3 Accounting (Merit).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Badminton -->
+  <section class="cover" id="badminton">
+    <div class="wrap cover__inner">
+      <div class="cover__text">
+        <h2 class="block__title block__title--light">Badminton</h2>
+        <p class="cover__lead fx">I&rsquo;ve played for the Cyprus national team since 2019. Training taught me most of what I know about work: show up every day, practise the boring parts, and be honest about why you lost.</p>
+
+        <table class="results fx">
+          <caption>Best results</caption>
+          <thead><tr><th scope="col">Year</th><th scope="col">Event</th><th scope="col">Result</th></tr></thead>
+          <tbody>
+            <tr><td>2025</td><td>Cypriot National Championships</td><td><b>National champion</b></td></tr>
+            <tr><td>2023</td><td>Small States of Europe Team Championship, with Cyprus</td><td><b>Gold</b></td></tr>
+          </tbody>
+        </table>
+
+        <ul class="cover__facts fx">
+          <li><b>Since 2019</b> on the Cyprus national team</li>
+          <li><b>Since 2023</b> elected athlete representative to the Cyprus Olympic Committee</li>
+          <li><b>Two months</b> of full-time training at the Asia Badminton Academy in Kuala Lumpur</li>
+        </ul>
+      </div>
+
+      <svg class="courtdraw" id="court" viewBox="0 0 200 440" aria-hidden="true">
+        <rect class="draw" x="1" y="1" width="198" height="438"/>
+        <line class="draw" x1="15" y1="1" x2="15" y2="439"/><line class="draw" x1="185" y1="1" x2="185" y2="439"/>
+        <line class="draw" x1="1" y1="25" x2="199" y2="25"/><line class="draw" x1="1" y1="415" x2="199" y2="415"/>
+        <line class="draw" x1="1" y1="155" x2="199" y2="155"/><line class="draw" x1="1" y1="285" x2="199" y2="285"/>
+        <line class="draw" x1="100" y1="1" x2="100" y2="155"/><line class="draw" x1="100" y1="285" x2="100" y2="439"/>
+        <line class="net" x1="-4" y1="220" x2="204" y2="220"/>
+        <path class="draw shot" d="M60 380 Q 110 150 150 60"/>
+        <circle class="dot" cx="150" cy="60" r="5"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="block wrap" id="about">
+    <div class="about">
+      <div class="about__main">
+        <h2 class="block__title">About me</h2>
+        <p class="fx">I grew up in Nicosia, finished school with 19.2 out of 20 while travelling to tournaments, and moved to Stockholm in 2025 to study at KTH.</p>
+        <p class="fx">The software I enjoy most is the kind that has to be right: payments that can&rsquo;t charge someone twice, data that has to stay private, systems that keep working when a few hundred people open them at once. Futsalaki taught me a lot about that, and my courses in algorithms, digital design and embedded systems gave me the fundamentals to reason about it properly.</p>
+        <p class="fx">For summer 2027 I&rsquo;d like to join a team that ships to real users, learn how experienced engineers review and test their work, and be given something real to own. I pick things up quickly, I take feedback well, and I&rsquo;m used to demanding training schedules.</p>
+      </div>
+
+      <aside class="about__side">
+        <div class="widget fx">
+          <h3 class="widget__title">What I work with</h3>
+          <dl class="skills">
+            <dt>Languages</dt><dd>TypeScript, JavaScript, Python, C, C++, Java, SQL</dd>
+            <dt>Frameworks</dt><dd>React, Next.js, React Native, Expo, FastAPI, Tailwind</dd>
+            <dt>Data and infra</dt><dd>PostgreSQL, Supabase, Prisma, Stripe, Git, GitHub Actions</dd>
+            <dt>Also</dt><dd>OpenCV, MediaPipe, YOLOv8, embedded C, digital design</dd>
+          </dl>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="block block--tint" id="contact">
+    <div class="wrap contact">
+      <div class="contact__info">
+        <h2 class="block__title">Get in touch</h2>
+        <p class="fx">If you&rsquo;re hiring interns for summer 2027, or want to talk about a project, send me a message. I usually reply within a day.</p>
+        <ul class="contact__list fx">
+          <li><span>Email</span><a href="mailto:ioannis.tambourlas@gmail.com">ioannis.tambourlas@gmail.com</a> <button class="copy" type="button" id="copy" data-email="ioannis.tambourlas@gmail.com">Copy</button></li>
+          <li><span>LinkedIn</span><a href="https://www.linkedin.com/in/ioannis-tambourlas-84197b3ab/" rel="noopener">Ioannis Tambourlas</a></li>
+          <li><span>GitHub</span><a href="https://github.com/ioannistambourlas" rel="noopener">@ioannistambourlas</a></li>
+          <li><span>Based in</span>Stockholm, Sweden</li>
+        </ul>
+      </div>
+
+      <form class="form fx" id="contactForm" data-email="ioannis.tambourlas@gmail.com">
+        <p><label for="f-name">Your name</label><input id="f-name" name="name" type="text" autocomplete="name" required></p>
+        <p><label for="f-company">Company <small>(optional)</small></label><input id="f-company" name="company" type="text" autocomplete="organization"></p>
+        <p><label for="f-msg">Message</label><textarea id="f-msg" name="message" rows="5" required></textarea></p>
+        <p class="form__foot"><button class="button" type="submit">Send message</button> <small class="form__hint">Opens your email app with the message filled in.</small></p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap site-footer__cols">
+    <div>
+      <h3 class="widget__title">Ioannis Tambourlas</h3>
+      <p>Computer Science student at KTH, co-founder of Futsalaki and badminton player for Cyprus.</p>
+    </div>
+    <div>
+      <h3 class="widget__title">Projects</h3>
+      <ul>
+        <li><a href="work/futsalaki/">Futsalaki</a></li>
+        <li><a href="work/sssb-market/">SSSB Market</a></li>
+        <li><a href="demos/futsalaki-app/">Futsalaki app demo</a></li>
+        <li><a href="demos/student-market/">SSSB Market demo</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="widget__title">Elsewhere</h3>
+      <ul>
+        <li><a href="https://github.com/ioannistambourlas" rel="noopener">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/ioannis-tambourlas-84197b3ab/" rel="noopener">LinkedIn</a></li>
+        <li><a href="Ioannis-Tambourlas-CV.pdf" download>CV (PDF)</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap site-footer__bottom">
+    <span>&copy; <span id="y">2026</span> Ioannis Tambourlas</span>
+    <a href="#main" class="totop">Back to top</a>
+  </div>
+</footer>
+
+<script src="assets/site.js"></script>
+</body>
+</html>
