@@ -27,12 +27,18 @@
 
     // Header gets a shadow and shrinks once the top bar has scrolled away
     var header = document.querySelector('.site-header'), topbar = document.querySelector('.topbar');
-    var heroImg = document.querySelector('.hero__photo img');
+    var heroImg = document.querySelector('.hero__photo img'), heroText = document.querySelector('.hero__inner');
     function onScroll() {
       var y = window.scrollY;
       if (header) header.classList.toggle('is-stuck', y > (topbar ? topbar.offsetHeight : 0) + 4);
-      // the photo drifts a little slower than the page
-      if (heroImg && !reduce && y < 1200) heroImg.style.setProperty('--py', Math.round(y * 0.18) + 'px');
+      if (!reduce && y < 1400) {
+        // the photo drifts slower than the page, the headline lifts and fades as you leave it
+        if (heroImg) heroImg.style.setProperty('--py', Math.round(y * 0.18) + 'px');
+        if (heroText) {
+          heroText.style.opacity = String(Math.max(0.1, 1 - y / 560));
+          heroText.style.transform = 'translate3d(0,' + Math.round(y * -0.12) + 'px,0)';
+        }
+      }
     }
     window.addEventListener('scroll', onScroll, { passive: true });
     cleanups.push(function () { window.removeEventListener('scroll', onScroll); });
@@ -135,6 +141,7 @@
   // ---- AJAX navigation between the home page and the case studies ----
   var bar = document.getElementById('loadbar');
   var parts = ['.topbar', '.site-header', '#main', '.site-footer'];
+  var shownPath = location.pathname; // the page whose content is on screen right now
 
   function isPage(url) {
     if (url.origin !== location.origin) return false;
@@ -145,7 +152,10 @@
   function scrollToHash(hash) {
     var el = hash && document.getElementById(decodeURIComponent(hash.slice(1)));
     doc.style.scrollBehavior = 'auto';
-    if (el) el.scrollIntoView(); else window.scrollTo(0, 0);
+    if (el) {
+      var head = document.querySelector('.site-header');
+      window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - (head ? head.offsetHeight : 0) - 16);
+    } else window.scrollTo(0, 0);
     doc.style.scrollBehavior = '';
   }
 
@@ -166,6 +176,7 @@
           var cur = document.querySelector(sel), fresh = next.querySelector(sel);
           if (cur && fresh) cur.replaceWith(document.importNode(fresh, true));
         });
+        shownPath = url.pathname;
         scrollToHash(url.hash);
         init();
         doc.classList.remove('is-leaving');
@@ -187,8 +198,10 @@
         e.preventDefault();
         go(url, true);
       });
-      window.addEventListener('popstate', function (e) {
-        if (e.state && e.state.ajax) go(new URL(location.href), false);
+      // Back/forward: reload the content whenever the page changed. In-page anchor jumps
+      // (#projects etc.) leave history entries without our state, so compare paths instead.
+      window.addEventListener('popstate', function () {
+        if (location.pathname !== shownPath) go(new URL(location.href), false);
       });
     }
   } catch (err) { /* plain navigation still works */ }

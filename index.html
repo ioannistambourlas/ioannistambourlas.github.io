@@ -12,7 +12,7 @@
   <meta property="og:url" content="https://ioannistambourlas.com/">
   <link rel="canonical" href="https://ioannistambourlas.com/">
   <meta name="theme-color" content="#fbfaf7">
-  <link rel="preload" as="image" type="image/webp" imagesrcset="assets/portrait-hero-sm.webp 543w, assets/portrait-hero.webp 1086w" imagesizes="(max-width: 820px) 100vw, 58vw">
+  <link rel="preload" as="image" type="image/webp" imagesrcset="assets/portrait-hero-sm.webp 600w, assets/portrait-hero.webp 1086w" imagesizes="(max-width: 820px) 100vw, 70vw">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -56,32 +56,27 @@
 <main id="main">
 
   <!-- Hero -->
-  <section class="hero">
+  <section class="hero" aria-label="Introduction">
+    <div class="hero__bg" aria-hidden="true"><img src="assets/portrait-hero-sm.webp" alt="" width="600" height="744"></div>
     <div class="hero__photo" aria-hidden="true">
       <picture>
-        <source type="image/webp" srcset="assets/portrait-hero-sm.webp 543w, assets/portrait-hero.webp 1086w" sizes="(max-width: 820px) 100vw, 58vw">
-        <img src="assets/portrait-hero.jpg" alt="" width="1086" height="1144" fetchpriority="high">
+        <source type="image/webp" srcset="assets/portrait-hero-sm.webp 600w, assets/portrait-hero.webp 1086w" sizes="(max-width: 820px) 100vw, 70vw">
+        <img src="assets/portrait-hero.jpg" alt="" width="1086" height="1347" fetchpriority="high">
       </picture>
     </div>
     <div class="wrap hero__inner">
-      <p class="hero__kicker rise" style="--d:.15s">Hi, I&rsquo;m Ioannis</p>
+      <p class="hero__kicker rise" style="--d:.2s">Hi, I&rsquo;m Ioannis</p>
       <h1 class="hero__title">
-        <span class="line"><span style="--d:.25s">Built for</span></span>
-        <span class="line"><span style="--d:.38s">match point.</span></span>
+        <span class="hero__line"><span class="w" style="--d:.45s">Turning</span> <span class="w" style="--d:.62s">ideas</span></span>
+        <span class="hero__line"><span class="w" style="--d:.79s">into</span> <span class="w w--accent" style="--d:.96s">software.</span></span>
       </h1>
-      <p class="hero__lead rise" style="--d:.6s">I build apps people actually use, study computer science at KTH, and won the 2025 Cypriot national badminton championship.</p>
-      <p class="hero__actions rise" style="--d:.75s">
-        <a class="button" href="#projects">See my work</a>
-        <a class="button button--outline" href="Ioannis-Tambourlas-CV.pdf" download>Download CV</a>
+      <p class="hero__lead rise" style="--d:1.35s">Software developer and computer science student at KTH in Stockholm. Co&#8209;founder of Futsalaki, a booking app live on iOS and Android.</p>
+      <p class="hero__actions rise" style="--d:1.5s">
+        <a class="button button--light" href="#projects">See my work</a>
+        <a class="button button--ghost-light" href="Ioannis-Tambourlas-CV.pdf" download>Download CV</a>
       </p>
     </div>
-    <div class="wrap">
-      <ul class="hero__facts rise" style="--d:.95s">
-        <li><b>Futsalaki</b> co-founder, live on iOS and Android</li>
-        <li><b>KTH</b> BSc Computer Science, 2025 to 2028</li>
-        <li><b>Summer 2027</b> open to software internships</li>
-      </ul>
-    </div>
+    <a class="hero__scroll rise" href="#projects" style="--d:1.9s" aria-label="Scroll to projects"><span></span></a>
   </section>
 
   <!-- Projects -->
