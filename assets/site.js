@@ -9,6 +9,9 @@
     cleanups.forEach(function (fn) { fn(); });
     cleanups = [];
 
+    // Opening animation for the hero (headline, photo, buttons)
+    requestAnimationFrame(function () { requestAnimationFrame(function () { doc.classList.add('is-loaded'); }); });
+
     // Mobile menu
     var toggle = document.querySelector('.menu-toggle'), menu = document.getElementById('menu');
     if (toggle && menu) {
@@ -24,8 +27,12 @@
 
     // Header gets a shadow and shrinks once the top bar has scrolled away
     var header = document.querySelector('.site-header'), topbar = document.querySelector('.topbar');
+    var heroImg = document.querySelector('.hero__photo img');
     function onScroll() {
-      if (header) header.classList.toggle('is-stuck', window.scrollY > (topbar ? topbar.offsetHeight : 0) + 4);
+      var y = window.scrollY;
+      if (header) header.classList.toggle('is-stuck', y > (topbar ? topbar.offsetHeight : 0) + 4);
+      // the photo drifts a little slower than the page
+      if (heroImg && !reduce && y < 1200) heroImg.style.setProperty('--py', Math.round(y * 0.18) + 'px');
     }
     window.addEventListener('scroll', onScroll, { passive: true });
     cleanups.push(function () { window.removeEventListener('scroll', onScroll); });

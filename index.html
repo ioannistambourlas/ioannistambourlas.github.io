@@ -8,11 +8,12 @@
   <meta property="og:title" content="Ioannis Tambourlas | Software developer">
   <meta property="og:description" content="Computer Science at KTH, co-founder of Futsalaki, looking for a summer 2027 internship.">
   <meta property="og:type" content="profile">
-  <meta property="og:image" content="https://ioannistambourlas.com/assets/shots/futsalaki-calendar.jpg">
+  <meta property="og:image" content="https://ioannistambourlas.com/assets/portrait-hero.jpg">
   <meta property="og:url" content="https://ioannistambourlas.com/">
   <link rel="canonical" href="https://ioannistambourlas.com/">
   <meta name="theme-color" content="#fbfaf7">
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" as="image" type="image/webp" imagesrcset="assets/portrait-hero-sm.webp 543w, assets/portrait-hero.webp 1086w" imagesizes="(max-width: 820px) 100vw, 58vw">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -54,34 +55,33 @@
 
 <main id="main">
 
-  <!-- Intro -->
-  <section class="intro wrap">
-    <div class="intro__text">
-      <p class="hello fx">Hello, and welcome.</p>
-      <h1 class="fx">I&rsquo;m Ioannis. I study computer science at KTH and build apps that people actually use.</h1>
-      <p class="intro__lead fx">I&rsquo;m from Nicosia, Cyprus, and in my second year at <a href="https://www.kth.se/en" rel="noopener">KTH Royal Institute of Technology</a> in Stockholm. I co-founded <a href="#futsalaki">Futsalaki</a>, a futsal booking app that is now on the App Store and Google Play. Outside of code I play badminton for Cyprus, and in 2025 I became national champion.</p>
-      <p class="intro__lead fx">Right now I&rsquo;m looking for a <strong>software engineering internship for summer 2027</strong>.</p>
-      <p class="intro__actions fx">
-        <a class="button" href="#projects">See my projects</a>
-        <a class="button button--outline" href="Ioannis-Tambourlas-CV.pdf" download>Download my CV (PDF)</a>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero__photo" aria-hidden="true">
+      <picture>
+        <source type="image/webp" srcset="assets/portrait-hero-sm.webp 543w, assets/portrait-hero.webp 1086w" sizes="(max-width: 820px) 100vw, 58vw">
+        <img src="assets/portrait-hero.jpg" alt="" width="1086" height="1144" fetchpriority="high">
+      </picture>
+    </div>
+    <div class="wrap hero__inner">
+      <p class="hero__kicker rise" style="--d:.15s">Hi, I&rsquo;m Ioannis</p>
+      <h1 class="hero__title">
+        <span class="line"><span style="--d:.25s">Built for</span></span>
+        <span class="line"><span style="--d:.38s">match point.</span></span>
+      </h1>
+      <p class="hero__lead rise" style="--d:.6s">I build apps people actually use, study computer science at KTH, and won the 2025 Cypriot national badminton championship.</p>
+      <p class="hero__actions rise" style="--d:.75s">
+        <a class="button" href="#projects">See my work</a>
+        <a class="button button--outline" href="Ioannis-Tambourlas-CV.pdf" download>Download CV</a>
       </p>
     </div>
-
-    <aside class="intro__side fx">
-      <figure class="photo">
-        <img src="assets/portrait.jpg" alt="Portrait of Ioannis Tambourlas" width="267" height="325">
-        <figcaption>Ioannis Tambourlas</figcaption>
-      </figure>
-      <div class="widget">
-        <h2 class="widget__title">Currently</h2>
-        <ul class="now">
-          <li><b>Studying</b> BSc Computer Science, KTH (2025 to 2028)</li>
-          <li><b>Building</b> Futsalaki, live on iOS and Android</li>
-          <li><b>Training</b> with the Cyprus national badminton team</li>
-          <li><b>Open to</b> internships in Stockholm or remote. EU citizen, no visa needed.</li>
-        </ul>
-      </div>
-    </aside>
+    <div class="wrap">
+      <ul class="hero__facts rise" style="--d:.95s">
+        <li><b>Futsalaki</b> co-founder, live on iOS and Android</li>
+        <li><b>KTH</b> BSc Computer Science, 2025 to 2028</li>
+        <li><b>Summer 2027</b> open to software internships</li>
+      </ul>
+    </div>
   </section>
 
   <!-- Projects -->
@@ -268,6 +268,15 @@
       </div>
 
       <aside class="about__side">
+        <div class="widget fx">
+          <h3 class="widget__title">Currently</h3>
+          <ul class="now">
+            <li><b>Studying</b> BSc Computer Science, KTH (2025 to 2028)</li>
+            <li><b>Building</b> Futsalaki, live on iOS and Android</li>
+            <li><b>Training</b> with the Cyprus national badminton team</li>
+            <li><b>Open to</b> internships in Stockholm or remote. EU citizen, no visa needed.</li>
+          </ul>
+        </div>
         <div class="widget fx">
           <h3 class="widget__title">What I work with</h3>
           <dl class="skills">
